@@ -1,19 +1,21 @@
 #include "../h/interruptHandler.hpp"
 extern "C" void handleSupervisorTrap(){
 
-    const uint64 volatile scause = Riscv::r_scause();
+    /*const uint64 volatile scause = Riscv::r_scause();
     switch (scause){
         case InterruptCause::IRQ_TIMER : {
-            __putc('a');
+            __putc('A');
         }
     }
-    Riscv::mc_sip(0x02);
-}
-/*
-extern "C" void timerTrap(){
-
+    Riscv::mc_sip(0x02);*/
+    __putc('B');
+    console_handler();
 }
 
-extern "C" void keyboardTrap(){
+extern "C" void handleTimerTrap(){
 
-} */
+}
+
+extern "C" void handleKeyboardTrap(){
+
+}
