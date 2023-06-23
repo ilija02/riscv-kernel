@@ -1,4 +1,4 @@
-#include "../lib/console.h"
+#include "../h/printing.hpp"
 #include "../h/MemoryAllocator.hpp"
 #include "../h/riscv.hpp"
 
@@ -11,8 +11,9 @@ void main() {
     MemoryAllocator::get().mem_free(mem);*/
     uint64 volatile handlerAddress = (uint64) &trapHandler | 0x01; //set the base address for interrupts to trap handler and
     //set mode to 1 (this enables vectored interrupts)
-    __asm__ volatile ("csrw stvec, %[vector]" : : [vector]"r"(handlerAddress));
+    Riscv::w_stvec(handlerAddress);
     //Riscv::ms_sstatus(0x02);
-    __putc('A');
-    __asm__ volatile ("ecall");
+    Riscv::ecall();
+    printInt(4);
+
 }
