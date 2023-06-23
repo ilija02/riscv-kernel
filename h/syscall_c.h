@@ -1,8 +1,6 @@
-//
-// Created by os on 6/22/23.
-//z
 #ifndef SYSCALL_C_H
 #define SYSCALL_C_H
+#include "../lib/hw.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -116,4 +114,4 @@ void putc (char c);
 #ifdef __cplusplus
 }
 #endif
-#endif SYSCALL_C_H
+#endif //SYSCALL_C_H

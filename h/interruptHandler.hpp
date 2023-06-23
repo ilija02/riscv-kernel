@@ -2,7 +2,7 @@
 #define  INTERRUPT_HANDLER_HPP
 #include "../lib/hw.h"
 #include "../h/riscv.hpp"
-#include "../lib/console.h"
+#include "../h/printing.hpp" // remove later
 
 enum InterruptCause:uint64 {
     IRQ_TIMER = 0x8000000000000001UL, // sent as software interrupt from the most privileged mode
@@ -10,8 +10,8 @@ enum InterruptCause:uint64 {
     IRQ_ILLEGAL_INSTRUCTION = 0x0000000000000002UL,
     IRQ_ILLEGAL_READ_ADDRESS = 0x0000000000000005UL,
     IRQ_ILLEGAL_WRITE_ADDRESS = 0x0000000000000007UL,
-    IRQ_SYSCALL_USERMODE = 0x0000000000000008UL,
-    IRQ_SYSCALL_KERNELMODE = 0x0000000000000009UL
+    IRQ_SYSCALL_USER_MODE = 0x0000000000000008UL,
+    IRQ_SYSCALL_KERNEL_MODE = 0x0000000000000009UL
 };
 
 enum SyscallID:uint64 {

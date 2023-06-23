@@ -188,3 +188,10 @@ fabric.properties
 .idea/**/azureSettings.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/clion,c++,c
+
+
+# user added
+*.lst 
+kernel
+kernel.asm
+.idea/*
