@@ -15,14 +15,21 @@ extern "C" void handleSupervisorTrap() {
         processSyscall = 1;
     }
     if (!processSyscall){
-        Riscv::mc_sip(0x02); // clear SSIP bit
+        Riscv::mc_sip(Riscv::SIP_SSIE); // clear SSIP bit
         return;
     }
 
     uint64 volatile syscall_id;
-    Riscv::r_a0();
+    syscall_id = Riscv::r_a0();
 
-    Riscv::mc_sip(0x02); // clear SSIP bit
+    if (syscall_id==SyscallID::MEM_ALLOC){
+        uint64  volatile size = Riscv::r_a1();
+        void* volatile allocated_chunk = MemoryAllocator::get().mem_alloc(size);
+        Riscv::mc_sip(Riscv::SIP_SSIE);
+        Riscv::w_a0(reinterpret_cast<uint64>(allocated_chunk)); // write the return value into a0
+        return;
+    }
+
 }
 
 extern "C" void handleTimerTrap() {
