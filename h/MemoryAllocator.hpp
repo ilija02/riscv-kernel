@@ -14,6 +14,7 @@ public:
     void *mem_alloc(
             size_t number_of_bytes); // allocates a new chunk of memory                                      // using the first fit algorithm
     long mem_free(void *allocated_chunk); // frees the chunk of memory previously allocated with mem_alloc
+    void* get_free_head() const {return free_head;} // for testing the memory allocator
 private:
     struct BlockHeader {
         BlockHeader *next;
