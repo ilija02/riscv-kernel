@@ -74,3 +74,32 @@ bool UnitTest::test_new_delete() {
 
     return old_size==new_size;
 }
+
+bool UnitTest::test_dequeue() {
+    uint64 x = 5, y = 10, z = 15, w = 20;
+    Dequeue<uint64> dequeue;
+
+    //5 10
+    dequeue.push_back(&x);
+    dequeue.push_back(&y);
+    uint64* tmp = dequeue.front();
+    printInt(*tmp);
+    tmp = dequeue.back();
+    printInt(*tmp);
+    //20 15 5 10
+    dequeue.push_front(&z);
+    dequeue.push_front(&w);
+    tmp = dequeue.front();
+    printInt(*tmp);
+    tmp = dequeue.back();
+    printInt(*tmp);
+
+    dequeue.pop_front();
+    tmp = dequeue.front();
+    printInt(*tmp);
+
+    dequeue.pop_back();
+    tmp = dequeue.back();
+    printInt(*tmp);
+    return true;
+}

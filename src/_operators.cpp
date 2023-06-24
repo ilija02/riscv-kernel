@@ -4,13 +4,13 @@
 // language and are already included. decltype(sizeof(0)) is used to get the appropriate data type for new
 //operators
 
-using param_type = decltype(sizeof(0));
+using size_t = decltype(sizeof(0));
 
-void *operator new(param_type size) {
+void *operator new(size_t size) {
     return mem_alloc(size);
 }
 
-void *operator new[](param_type size) {
+void *operator new[](size_t size) {
     return mem_alloc(size);
 }
 
