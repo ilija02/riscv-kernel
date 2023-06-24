@@ -28,8 +28,13 @@ extern "C" void handleSupervisorTrap() {
         Riscv::mc_sip(Riscv::SIP_SSIE);
         Riscv::w_a0(reinterpret_cast<uint64>(allocated_chunk)); // write the return value into a0
         return;
+    } else if (syscall_id==SyscallID::MEM_FREE){
+        void * volatile chunk  = reinterpret_cast<void*>(Riscv::r_a1());
+        uint64 volatile return_code = MemoryAllocator::get().mem_free(chunk);
+        Riscv::w_a0(return_code);
     }
 
+    Riscv::mc_sip(Riscv::SIP_SSIE); // clear SSIP bit
 }
 
 extern "C" void handleTimerTrap() {
