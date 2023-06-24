@@ -2,7 +2,7 @@
 #define SYSCALL_C_H
 #include "../lib/hw.h"
 #include "../h/syscall_id.hpp"
-#include "../h/riscv.hpp"
+#include "../h/RiscV.hpp"
 
 #ifdef __cplusplus
 extern "C" {

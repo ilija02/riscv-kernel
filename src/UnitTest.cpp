@@ -1,7 +1,7 @@
 #include "../h/UnitTest.hpp"
 #include "../h/syscall_c.h"
 #include "../h/printing.hpp"
-#include "../h/riscv.hpp"
+#include "../h/RiscV.hpp"
 
 UnitTest &UnitTest::get() {
     static UnitTest instance;
@@ -11,7 +11,7 @@ UnitTest &UnitTest::get() {
 UnitTest::UnitTest() {
     uint64 volatile handlerAddress = (uint64) &trapHandler | 0x01; //set the base address for interrupts to trap handler and
     //set mode to 1 (this enables vectored interrupts)
-    Riscv::w_stvec(handlerAddress);
+    RiscV::w_stvec(handlerAddress);
 
 }
 
