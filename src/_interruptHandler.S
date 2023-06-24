@@ -1,12 +1,12 @@
-.macro PUSH_REGS #REMOVED x10 (a0) register BE CAUTIOS
+.macro PUSH_REGS
 addi sp, sp, -256
-.irp index, 0,1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
+.irp index, 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
 sd x\index, \index*8(sp)
 .endr
 .endm
 
-.macro POP_REGS#REMOVED x10 (a0) register BE CAUTIOS
-.irp index, 0,1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
+.macro POP_REGS
+.irp index, 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
 ld x\index, \index*8(sp)
 .endr
 addi sp, sp, 256
@@ -35,8 +35,11 @@ processSyscallAndExceptions:
     csrr t0, sepc #read in saved pc
     addi t0,t0, 4 #increment it by four because the saved address is the ecall instruction
     csrw sepc, t0 #write back the modified pc
-    # restore all registers
-    POP_REGS
+    # restore all registers EXCEPT A0
+    .irp index, 0,1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
+    ld x\index, \index*8(sp)
+    .endr
+    addi sp, sp, 256
     j return
 processTimer:
     # save all registers
