@@ -7,10 +7,16 @@ struct BlockHeader {
     size_t size_in_bytes;
 };
 
+struct TestStruct {
+    uint64 x;
+    uint64 y;
+};
+
 class UnitTest {
 public:
     static UnitTest& get ();
     static bool test_memory_allocator();
+    static bool test_new_delete();
 private:
     UnitTest();
 
