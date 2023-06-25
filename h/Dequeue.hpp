@@ -83,10 +83,12 @@ void Dequeue<T>::push_front(T *element) {
 template<typename T>
 void Dequeue<T>::push_back(T *element) {
   Node *node = new Node(element);
-  if (this->tail != nullptr) {
+  if (this->tail != nullptr)
+  {
     this->tail->next = node;
     this->tail = node;
-  } else
+  }
+  else
     this->tail = this->head = node;
 }
 

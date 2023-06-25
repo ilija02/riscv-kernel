@@ -6,7 +6,8 @@
 
 void printString(char const *string) {
 
-  while (*string != '\0') {
+  while (*string != '\0')
+  {
     __putc(*string);
     string++;
   }
@@ -17,7 +18,8 @@ char *getString(char *buf, int max) {
   int i, cc;
   char c;
 
-  for (i = 0; i + 1 < max;) {
+  for (i = 0; i + 1 < max;)
+  {
     cc = __getc();
     if (cc < 1)
       break;
@@ -47,17 +49,22 @@ void printInt(int xx, int base, int sgn) {
   uint x;
 
   neg = 0;
-  if (sgn && xx < 0) {
+  if (sgn && xx < 0)
+  {
     neg = 1;
     x = -xx;
-  } else {
+  }
+  else
+  {
     x = xx;
   }
 
   i = 0;
-  do {
+  do
+  {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
+  }
+  while ((x /= base) != 0);
   if (neg)
     buf[i++] = '-';
 

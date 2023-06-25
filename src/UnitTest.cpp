@@ -9,10 +9,6 @@ UnitTest &UnitTest::get() {
 }
 
 UnitTest::UnitTest() {
-  uint64 volatile
-      handlerAddress = (uint64) &trapHandler | 0x01; //set the base address for interrupts to trap handler and
-  //set mode to 1 (this enables vectored interrupts)
-  RiscV::w_stvec(handlerAddress);
 
 }
 
@@ -51,7 +47,8 @@ bool UnitTest::test_new_delete() {
   t->y = 10;
 
   uint64 *arr = new uint64[1000];
-  for (int i = 0; i < 1000; i++) {
+  for (int i = 0; i < 1000; i++)
+  {
     arr[i] = i;
   }
   free_head = (BlockHeader *) instance.get_free_head();
