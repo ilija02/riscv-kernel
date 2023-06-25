@@ -7,13 +7,12 @@
 using size_t = decltype(sizeof(0));
 
 void *operator new(size_t size) {
-    return mem_alloc(size);
+  return mem_alloc(size);
 }
 
 void *operator new[](size_t size) {
-    return mem_alloc(size);
+  return mem_alloc(size);
 }
-
 
 void operator delete(void *chunk)
 
