@@ -4,25 +4,24 @@
 #include "../h/Dequeue.hpp"
 extern "C" void trapHandler();
 struct BlockHeader {
-    BlockHeader *next;
-    size_t size_in_bytes;
+  BlockHeader *next;
+  size_t size_in_bytes;
 };
 
 struct TestStruct {
-    uint64 x;
-    uint64 y;
+  uint64 x;
+  uint64 y;
 };
 
 class UnitTest {
 public:
-    static UnitTest& get ();
-    static bool test_memory_allocator();
-    static bool test_new_delete();
-    static bool test_dequeue();
+  static UnitTest &get();
+  static bool test_memory_allocator();
+  static bool test_new_delete();
+  static bool test_dequeue();
 private:
-    UnitTest();
+  UnitTest();
 
 };
-
 
 #endif //UNITTEST_HPP
