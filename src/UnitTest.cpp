@@ -101,3 +101,51 @@ bool UnitTest::test_dequeue() {
   printInt(*tmp);
   return true;
 }
+bool UnitTest::test_synchronous_context_switching() {
+  printString("------ Testing: test_synchronous_context_switching --------\n");
+  TCB *threads[3];
+  TCB::create_thread(&threads[0], nullptr, nullptr, nullptr);
+  uint64 *stack1 = new uint64[DEFAULT_STACK_SIZE];
+  uint64 *stack2 = new uint64[DEFAULT_STACK_SIZE];
+  TCB::running = threads[0];
+  TCB::create_thread(&threads[1],workerBodyA, nullptr, stack1);
+  printString("Thread A created\n");
+  TCB::create_thread(&threads[2], workerBodyB, nullptr, stack2);
+  printString("Thread B created\n");
+  while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
+    TCB::yield();
+  }
+
+  for (auto &thread: threads) delete thread;
+  printString("----- Finished test: test_synchronous_context_switching -----\n");
+  return true;
+}
+bool UnitTest::test_thread_create() {
+  printString("------Testing: test_thread_create --------\n");
+  thread_t threads[3] = {nullptr};
+  printString("Address of threads[0] :");
+  printInt((uint64)&threads[0], 16);
+  printString("\n");
+  if (thread_create(&threads[0], nullptr, nullptr) < 0){
+    printString("Failed creating main thread.");
+    return false;
+  }
+  TCB::running = threads[0];
+  if (thread_create(&threads[1], workerBodyA, nullptr) < 0){
+    printString("Failed creating A thread.");
+    return false;
+  }
+  printString("Thread A created\n");
+
+  if (thread_create(&threads[2], workerBodyB, nullptr) < 0 ){
+    printString("Failed creating B thread.");
+  }
+  printString("Thread B created\n");
+  while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
+    TCB::yield();
+  }
+
+  for (auto &thread: threads) delete thread;
+  printString("----- Finished test: test_thread_create -----\n");
+  return true;
+}

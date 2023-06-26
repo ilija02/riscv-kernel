@@ -5,6 +5,7 @@
 #include "../h/printing.hpp" // remove later
 #include "../h/syscall_id.hpp"
 #include "../h/MemoryAllocator.hpp"
+#include "../h/TCB.hpp"
 
 enum InterruptCause : uint64 {
   IRQ_TIMER = 0x8000000000000001UL, // sent as software interrupt from the most privileged mode

@@ -29,7 +29,10 @@ void TCB::dispatch() {
   context_switch(&old_running->saved_context, &TCB::running->saved_context);
 }
 
-TCB *TCB::create_thread(TCB::Task task, void *argument, uint64 *allocatedStack) {
-  return new TCB(task, argument, allocatedStack);
+uint64 TCB::create_thread(TCB** handle, TCB::Task task, void *argument, uint64 *allocatedStack) {
+  TCB* created_thread = new TCB(task, argument, allocatedStack);
+  if (handle != nullptr) *handle = created_thread;
+  if (created_thread == nullptr) return -1;
+  return 0;
 }
 
