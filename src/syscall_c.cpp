@@ -14,7 +14,7 @@
 uint64 perform_syscall(uint64 syscall_id, void* a1 = nullptr, void* a2= nullptr, void* a3= nullptr, void* a4= nullptr){
   //arguments are passed to the handleSupervisorTrap through registers
   uint64 return_value;
-  RiscV::ecall();
+  RiscV::ecall(); // calls the interrupt handler
   return_value = RiscV::r_a0();
   return return_value;
 }
@@ -33,4 +33,7 @@ int thread_create(thread_t *handle, void (*start_routine)(void *), void *arg) {
     if (allocated_stack == nullptr) return -1; // stack allocation failed
   }
   return (int) perform_syscall(SyscallID::THREAD_CREATE , (void*) handle, (void*)start_routine, (void*)arg, (void*) allocated_stack);
+}
+int thread_exit() {
+  return perform_syscall(SyscallID::THREAD_EXIT);
 }

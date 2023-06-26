@@ -28,6 +28,9 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
   else if (syscall_id == SyscallID::THREAD_CREATE)
     // a1 - handle, a2 - start_routine, a3 - argument, a4 - allocated stack
     ret_val = TCB::create_thread((TCB **) a1, (TCB::Task) a2, a3, (uint64 *) a4);
+  else if (syscall_id==SyscallID::THREAD_EXIT)
+    ret_val = TCB::exit_thread();
+
 
   // There's no need to clear the SSIP bit as in other handlers because interrupt bit is not set.
   return ret_val;

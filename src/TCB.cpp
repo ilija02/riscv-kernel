@@ -38,9 +38,10 @@ void TCB::thread_wrapper() {
     TCB::running->task(TCB::running->argument);
     exit_thread();
 }
-void TCB::exit_thread() {
-  if (!TCB::running->is_running()) return;
+int TCB::exit_thread() {
+  if (!TCB::running->is_running()) return -1;
     TCB::running->finish();
     TCB::dispatch();
+    return 0;
 }
 

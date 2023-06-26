@@ -16,7 +16,7 @@ public:
   ~TCB() { MemoryAllocator::get().mem_free(allocated_stack); }
 
   static uint64 create_thread(TCB** handle, Task task, void *argument, uint64 *allocatedStack);
-  static void exit_thread();
+  static int exit_thread();
   static void yield(); // implemented in _yield.S
 
   static void dispatch();
