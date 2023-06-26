@@ -38,5 +38,5 @@ int thread_exit() {
   return perform_syscall(SyscallID::THREAD_EXIT);
 }
 void thread_dispatch() {
-
+  perform_syscall(SyscallID::THREAD_DISPATCH);
 }

@@ -20,8 +20,8 @@ void workerBodyA(void *) {
 
   printString("A: yield\n");
   __asm__ ("li t1, 7");
-  TCB::yield();
-
+  //TCB::yield();
+  thread_dispatch();
   uint64 t1 = 0;
   __asm__ ("mv %[t1], t1" : [t1] "=r"(t1));
 
@@ -54,8 +54,8 @@ void workerBodyB(void *) {
 
   printString("B: yield\n");
   __asm__ ("li t1, 5");
-  TCB::yield();
-
+  //TCB::yield();
+  thread_dispatch();
   uint64 result = fibonacci(30);
   printString("B: fibonaci=");
   printInt(result);
