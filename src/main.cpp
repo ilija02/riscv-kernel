@@ -9,25 +9,30 @@ int main() {
   //set mode to 1 (this enables vectored interrupts)
   RiscV::w_stvec(handlerAddress);
 
+  //-------------------------------------
   MemoryAllocator &instance = MemoryAllocator::get();
   BlockHeader *free_head = (BlockHeader *) instance.get_free_head();
-  printString("Available heap memory at start: ");
-  printInt(free_head->size_in_bytes);
-  printString("\n");
+  size_t free_memory_at_start = free_head->size_in_bytes;
+  //--------------------------------------
 
   UnitTest& TestRunner = UnitTest::get();
   TestRunner.test_synchronous_context_switching();
   //TestRunner.test_new_delete();
-  //TestRunner.test_dequeue();
-
-
+  TestRunner.test_dequeue();
   TestRunner.test_thread_create();
   //RiscV::ms_sstatus(RiscV::SIP_SSIE);
 
   //RiscV::mc_sstatus(RiscV::SIP_SSIE);
-  printString("Available heap memory at end: ");
-  printInt(free_head->size_in_bytes);
+
+  //-----------------------------
+  size_t free_memory_at_end = free_head->size_in_bytes;
+  printString("start free memory:  ");
+  printInt(free_memory_at_start);
+  printString("\t");
+  printString("end free memory:  ");
+  printInt(free_memory_at_end);
   printString("\n");
+  //-----------------------------
   return 0;
 }
 

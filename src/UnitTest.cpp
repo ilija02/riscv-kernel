@@ -99,6 +99,10 @@ bool UnitTest::test_dequeue() {
   dequeue.pop_back();
   tmp = dequeue.back();
   printInt(*tmp);
+  dequeue.pop_front();
+  dequeue.pop_back();
+  dequeue.pop_back();
+  dequeue.pop_back();
   return true;
 }
 bool UnitTest::test_synchronous_context_switching() {
