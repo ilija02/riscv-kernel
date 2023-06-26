@@ -9,7 +9,7 @@ public:
   // task is a pointer to a function that has no return value and takes one void* argument
   using Task = void (*)(void *);
   enum ThreadState {
-    CREATED, FINISHED
+    CREATED, READY, RUNNING, SUSPENDED, FINISHED
   };
   static TCB *running;
 
@@ -44,6 +44,7 @@ private:
   ThreadState state = ThreadState::CREATED;
   SavedContext saved_context = {0,0};
   Task task = nullptr;
+  void* argument;
   uint64 *allocated_stack = nullptr;
   TCB** my_handle; // my_handle is populated in create_thread
 };
