@@ -37,3 +37,6 @@ int thread_create(thread_t *handle, void (*start_routine)(void *), void *arg) {
 int thread_exit() {
   return perform_syscall(SyscallID::THREAD_EXIT);
 }
+void thread_dispatch() {
+
+}

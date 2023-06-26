@@ -18,10 +18,7 @@ void TCB::dispatch() {
   if (!old_running->is_finished()){
     Scheduler::get().put_tcb(old_running);
     old_running->state = READY;
-  } else {
-    //TCB::running->my_handle = nullptr;
-    //delete TCB::running;
-  }
+  } //else delete TCB::running; // if automatic deletion of exited threads is required uncomment this line. Note that the explicit deletion is then forbidden.
 
   TCB::running = Scheduler::get().get_tcb();
   TCB::running->state = ThreadState::RUNNING;
