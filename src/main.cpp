@@ -9,9 +9,10 @@ int main() {
   RiscV::w_stvec(handlerAddress);
 
   UnitTest& TestRunner = UnitTest::get();
-  TestRunner.test_new_delete();
-  //TestRunner.test_dequeue();
   TestRunner.test_synchronous_context_switching();
+  //TestRunner.test_new_delete();
+  //TestRunner.test_dequeue();
+
 
   TestRunner.test_thread_create();
   //RiscV::ms_sstatus(RiscV::SIP_SSIE);
