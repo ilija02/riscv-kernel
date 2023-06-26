@@ -3,7 +3,7 @@
 
 #include "../lib/hw.h"
 #include "../h/Scheduler.hpp"
-
+#include "../h/RiscV.hpp"
 class TCB {
 public:
   // task is a pointer to a function that has no return value and takes one void* argument
