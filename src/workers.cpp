@@ -40,7 +40,7 @@ void workerBodyA(void *) {
     printInt(i);
     printString("\n");
   }
-
+  thread_exit();
 }
 
 void workerBodyB(void *) {
@@ -67,5 +67,5 @@ void workerBodyB(void *) {
     printInt(i);
     printString("\n");
   }
-
+  //thread_exit();
 }
