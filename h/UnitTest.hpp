@@ -2,6 +2,9 @@
 #define UNITTEST_HPP
 #include "../h/MemoryAllocator.hpp"
 #include "../h/Dequeue.hpp"
+#include "../h/workers.hpp"
+#include "../h/TCB.hpp"
+
 extern "C" void trapHandler();
 struct BlockHeader {
   BlockHeader *next;
@@ -19,6 +22,8 @@ public:
   static bool test_memory_allocator();
   static bool test_new_delete();
   static bool test_dequeue();
+  static bool test_synchronous_context_switching();
+  static bool test_thread_create();
 private:
   UnitTest();
 

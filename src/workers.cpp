@@ -58,7 +58,7 @@ void workerBodyB(void *) {
   __asm__ ("li t1, 5");
   TCB::yield();
 
-  uint64 result = fibonacci(23);
+  uint64 result = fibonacci(30);
   printString("B: fibonaci=");
   printInt(result);
   printString("\n");

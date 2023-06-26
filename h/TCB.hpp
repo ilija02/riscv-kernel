@@ -15,7 +15,7 @@ public:
 
   ~TCB() { MemoryAllocator::get().mem_free(allocated_stack); }
 
-  static TCB *create_thread(Task task, void *argument, uint64 *allocatedStack);
+  static uint64 create_thread(TCB** handle, Task task, void *argument, uint64 *allocatedStack);
 
   static void yield(); // implemented in _yield.S
 
@@ -45,7 +45,7 @@ private:
   SavedContext saved_context;
   Task task;
   uint64 *allocated_stack;
-
+  TCB** my_handle;
 };
 
 #endif //BASE_TCB_HPP
