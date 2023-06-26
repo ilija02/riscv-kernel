@@ -18,7 +18,10 @@ void TCB::dispatch() {
   if (!old_running->is_finished()){
     Scheduler::get().put_tcb(old_running);
     old_running->state = READY;
-  } else delete TCB::running;
+  } else {
+    //TCB::running->my_handle = nullptr;
+    //delete TCB::running;
+  }
 
   TCB::running = Scheduler::get().get_tcb();
   TCB::running->state = ThreadState::RUNNING;
