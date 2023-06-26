@@ -1,8 +1,9 @@
 #include "../h/interruptHandler.hpp"
 
 // takes "implicit" arguments as they are in registers a0 to a7
-extern "C" void handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, void *a3, void *a4) {
+extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, void *a3, void *a4) {
   uint64 volatile processSyscall = 0;
+  uint64 volatile ret_val;
   const uint64 volatile scause = RiscV::r_scause();
   if (scause == InterruptCause::IRQ_ILLEGAL_INSTRUCTION) {
     printString("Exception: Illegal instruction\n");
@@ -16,19 +17,20 @@ extern "C" void handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, void
     printString("Unknown exception cause. \n");
   }
 
-  if (!processSyscall) return;
+  if (!processSyscall) return 0;
   // Note: The return value of the corresponding kernel functions is implicitly stored in a0, and then collected from a0 by corresponding C api call.
   if (syscall_id == SyscallID::MEM_ALLOC)
-    MemoryAllocator::get().mem_alloc((uint64) a1); //a1 - size param
+    ret_val = (uint64 )MemoryAllocator::get().mem_alloc((uint64) a1); //a1 - size param
 
   else if (syscall_id == SyscallID::MEM_FREE)
-    MemoryAllocator::get().mem_free(a1); //a1 - chunk
+    ret_val = MemoryAllocator::get().mem_free(a1); //a1 - chunk
 
   else if (syscall_id == SyscallID::THREAD_CREATE)
     // a1 - handle, a2 - start_routine, a3 - argument, a4 - allocated stack
-    TCB::create_thread((TCB **) a1, (TCB::Task) a2, a3, (uint64 *) a4);
+    ret_val = TCB::create_thread((TCB **) a1, (TCB::Task) a2, a3, (uint64 *) a4);
 
   // There's no need to clear the SSIP bit as in other handlers because interrupt bit is not set.
+  return ret_val;
 }
 
 uint64 counter = 0;

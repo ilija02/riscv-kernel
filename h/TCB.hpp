@@ -16,7 +16,7 @@ public:
   ~TCB() { MemoryAllocator::get().mem_free(allocated_stack); }
 
   static uint64 create_thread(TCB** handle, Task task, void *argument, uint64 *allocatedStack);
-
+  static void exit_thread();
   static void yield(); // implemented in _yield.S
 
   static void dispatch();
@@ -24,7 +24,7 @@ public:
   void finish() { this->state = ThreadState::FINISHED; }
 
   bool is_finished() const { return this->state == ThreadState::FINISHED; }
-
+  bool is_running() const {return this->state == ThreadState::RUNNING; }
   void *operator new(size_t size) { return MemoryAllocator::get().mem_alloc(size); }
 
   void operator delete(void *chunk) { MemoryAllocator::get().mem_free(chunk); }

@@ -41,8 +41,6 @@ void workerBodyA(void *) {
     printString("\n");
   }
 
-  TCB::running->finish();
-  TCB::yield();
 }
 
 void workerBodyB(void *) {
@@ -70,6 +68,4 @@ void workerBodyB(void *) {
     printString("\n");
   }
 
-  TCB::running->finish();
-  TCB::yield();
 }
