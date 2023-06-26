@@ -116,7 +116,7 @@ bool UnitTest::test_synchronous_context_switching() {
     TCB::yield();
   }
 
-  //for (auto &thread: threads) delete thread;
+  for (auto &thread: threads) delete thread;
   printString("----- Finished test: test_synchronous_context_switching -----\n");
   return true;
 }
@@ -145,7 +145,7 @@ bool UnitTest::test_thread_create() {
     TCB::yield();
   }
 
- // for (auto &thread: threads) delete thread; threads delete themselves when they finish, so this isn't necessary
+ for (auto &thread: threads) delete thread;
   printString("----- Finished test: test_thread_create -----\n");
   return true;
 }
