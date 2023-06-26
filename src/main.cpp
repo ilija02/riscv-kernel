@@ -11,9 +11,9 @@ int main() {
   UnitTest& TestRunner = UnitTest::get();
   TestRunner.test_new_delete();
   //TestRunner.test_dequeue();
-  TestRunner.test_synchronous_context_switching();
+  //TestRunner.test_synchronous_context_switching();
 
-  //TestRunner.test_thread_create();
+  TestRunner.test_thread_create();
   //RiscV::ms_sstatus(RiscV::SIP_SSIE);
 
   //RiscV::mc_sstatus(RiscV::SIP_SSIE);
