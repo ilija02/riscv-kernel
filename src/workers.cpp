@@ -5,7 +5,7 @@
 static uint64 fibonacci(uint64 n) {
   if (n == 0 || n == 1)
   { return n; }
-  if (n % 4 == 0) TCB::yield();
+  if (n % 4 == 0) thread_dispatch();
   return fibonacci(n - 1) + fibonacci(n - 2);
 }
 
