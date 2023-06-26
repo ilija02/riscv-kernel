@@ -2,23 +2,13 @@
 
 TCB *TCB::running = nullptr;
 TCB::TCB(TCB::Task task, void *argument, uint64 *allocated_stack) {
-  this->state = ThreadState::CREATED;
-  if (task == nullptr)
-  {
-    this->allocated_stack = nullptr;
-    this->saved_context.sp = 0;
-    this->saved_context.ra = 0;
-  }
-  else
-  {
-    this->allocated_stack = allocated_stack;
-    this->saved_context.sp =
-        reinterpret_cast<uint64 >(&allocated_stack[DEFAULT_STACK_SIZE]); // since the stack grows downward, set the stack pointer to the top of allocated stackSch
-    this->saved_context.ra = (uint64) task;
-    Scheduler::get().put_tcb(this);
-
-  }
-
+  if (task == nullptr) return;
+  this->task = task;
+  this->allocated_stack = allocated_stack;
+  this->saved_context.sp =
+      reinterpret_cast<uint64 >(&allocated_stack[DEFAULT_STACK_SIZE]); // since the stack grows downward, set the stack pointer to the top of allocated stackSch
+  this->saved_context.ra = (uint64) task;
+  Scheduler::get().put_tcb(this);
 }
 
 void TCB::dispatch() {
@@ -29,10 +19,13 @@ void TCB::dispatch() {
   context_switch(&old_running->saved_context, &TCB::running->saved_context);
 }
 
-uint64 TCB::create_thread(TCB** handle, TCB::Task task, void *argument, uint64 *allocatedStack) {
-  TCB* created_thread = new TCB(task, argument, allocatedStack);
+uint64 TCB::create_thread(TCB **handle, TCB::Task task, void *argument, uint64 *allocatedStack) {
+  TCB *created_thread = new TCB(task, argument, allocatedStack);
   if (handle != nullptr) *handle = created_thread;
-  if (created_thread == nullptr) return -1;
+  if (created_thread == nullptr) return -1; // might be null as we're using our own memory allocator
   return 0;
+}
+void TCB::thread_wrapper() {
+
 }
 

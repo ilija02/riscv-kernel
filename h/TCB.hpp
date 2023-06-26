@@ -34,18 +34,18 @@ private:
     uint64 ra;
     uint64 sp;
   };
-
   // stack is allocated before calling TCB::CreateThread. It is allocated in the C api syscall.
   explicit TCB(TCB::Task task,
                void *argument,
                uint64 *allocated_stack);
 
   static void context_switch(SavedContext *old_context, SavedContext *new_context); //implemented in _contextSwitch.s
-  ThreadState state;
-  SavedContext saved_context;
-  Task task;
-  uint64 *allocated_stack;
-  TCB** my_handle;
+  static void thread_wrapper();
+  ThreadState state = ThreadState::CREATED;
+  SavedContext saved_context = {0,0};
+  Task task = nullptr;
+  uint64 *allocated_stack = nullptr;
+  TCB** my_handle; // my_handle is populated in create_thread
 };
 
 #endif //BASE_TCB_HPP
