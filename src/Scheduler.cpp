@@ -1,7 +1,3 @@
-//
-// Created by os on 6/24/23.
-//
-
 #include "../h/Scheduler.hpp"
 
 Scheduler &Scheduler::get() {

@@ -25,6 +25,7 @@ void _thread::dispatch() {
   else { // if the thread is finished and the parent is waiting for it, put the parent in the scheduler
     if (old_running->parent_thread && old_running->is_parent_waiting){
         old_running->is_parent_waiting = false;
+        old_running->parent_thread->resume();
         Scheduler::get().put_tcb(old_running->parent_thread);
     } //else delete old_running // if automatic deletion of exited threads is required uncomment this line. Note that the explicit deletion is then forbidden.
   }
@@ -33,7 +34,7 @@ void _thread::dispatch() {
   context_switch(&old_running->saved_context, &_thread::running->saved_context);
 }
 
-uint64 _thread::create_thread(_thread **handle, _thread::Task task, void *argument, uint64 *allocatedStack) {
+int _thread::create_thread(_thread **handle, _thread::Task task, void *argument, uint64 *allocatedStack) {
   _thread *created_thread = new _thread(task, argument, allocatedStack);
   if (handle != nullptr) *handle = created_thread;
   if (created_thread == nullptr) return -1; // might be null as we're using our own memory allocator
@@ -74,6 +75,5 @@ bool _thread::switch_to_user_mode() {
     __asm__ volatile ("sret");
     return true;
   } else return false; //already in user mode */
- return false;
 }
 
