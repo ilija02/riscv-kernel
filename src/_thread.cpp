@@ -43,10 +43,10 @@ int _thread::create_thread(_thread **handle, _thread::Task task, void *argument,
 
 void _thread::thread_wrapper() {
   if (_thread::running_mode == RunningMode::USER)
-    _thread::switch_to_user_mode();
-    /*if (_thread::switch_to_user_mode()){
+   // _thread::switch_to_user_mode();
+    if (_thread::switch_to_user_mode()){
       printString("Changed privilege. \n");
-    }*/
+    }
   _thread::running->task(_thread::running->argument);
   thread_exit();
   //exit_thread();

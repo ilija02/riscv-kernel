@@ -10,6 +10,7 @@ static uint64 fibonacci(uint64 n) {
 }
 
 void workerBodyA(void *) {
+    // __asm__ volatile ("sret"); // if the kernel panic happens when this line is uncommented that means that the user mode is working
   uint8 i = 0;
   for (; i < 3; i++)
   {
