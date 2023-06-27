@@ -1,11 +1,12 @@
 #include "../h/interruptHandler.hpp"
 
+extern "C" void haltProcessor();
+
 inline void print_diagnostics(){
   const uint64 volatile scause = RiscV::r_scause();
   const uint64 volatile stval = RiscV::r_stval();
   const uint64 volatile sstatus = RiscV::r_sstatus();
   const uint64 volatile sepc = RiscV::r_sepc();
-  printString("Unknown exception cause. \n");
   printString("stval: ");
   printInt(stval, 16);
   printString("\n");
@@ -18,7 +19,9 @@ inline void print_diagnostics(){
   printString("sepc: ");
   printInt(sepc, 16);
   printString("\n");
+  haltProcessor();
 }
+
 // takes "implicit" arguments as they are in registers a0 to a7
 extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, void *a3, void *a4) {
   uint64 volatile processSyscall = 0;
