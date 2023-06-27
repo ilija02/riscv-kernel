@@ -40,3 +40,6 @@ int thread_exit() {
 void thread_dispatch() {
   perform_syscall(SyscallID::THREAD_DISPATCH);
 }
+void thread_join(thread_t handle) {
+
+}

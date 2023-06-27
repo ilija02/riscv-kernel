@@ -18,15 +18,14 @@ public:
   static uint64 create_thread(TCB** handle, Task task, void *argument, uint64 *allocatedStack);
   static int exit_thread();
   static void yield(); // implemented in _yield.S
-
   static void dispatch();
 
   void finish() { this->state = ThreadState::FINISHED; }
-
   bool is_finished() const { return this->state == ThreadState::FINISHED; }
   bool is_running() const {return this->state == ThreadState::RUNNING; }
-  void *operator new(size_t size) { return MemoryAllocator::get().mem_alloc(size); }
+  int join();
 
+  void *operator new(size_t size) { return MemoryAllocator::get().mem_alloc(size); }
   void operator delete(void *chunk) { MemoryAllocator::get().mem_free(chunk); }
 
 private:
@@ -46,7 +45,6 @@ private:
   Task task = nullptr;
   void* argument;
   uint64 *allocated_stack = nullptr;
-  TCB** my_handle; // my_handle is populated in create_thread
 };
 
 #endif //BASE_TCB_HPP

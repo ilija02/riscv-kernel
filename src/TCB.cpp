@@ -41,4 +41,7 @@ int TCB::exit_thread() {
     TCB::dispatch();
     return 0;
 }
+int TCB::join() {
+  return 0;
+}
 
