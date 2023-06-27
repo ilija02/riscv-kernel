@@ -1,5 +1,5 @@
 #include "../lib/hw.h"
-#include "../h/TCB.hpp"
+#include "../h/_thread.hpp"
 #include "../h/printing.hpp"
 
 static uint64 fibonacci(uint64 n) {
@@ -20,7 +20,7 @@ void workerBodyA(void *) {
 
   printString("A: yield\n");
   __asm__ ("li t1, 7");
-  //TCB::yield();
+  //_thread::yield();
   thread_dispatch();
   uint64 t1 = 0;
   __asm__ ("mv %[t1], t1" : [t1] "=r"(t1));
@@ -55,7 +55,7 @@ void workerBodyB(void *) {
 
   printString("B: yield\n");
   __asm__ ("li t1, 5");
-  //TCB::yield();
+  //_thread::yield();
   thread_dispatch();
   uint64 result = fibonacci(25); //75025
   printString("B: fibonaci=");

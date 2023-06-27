@@ -6,7 +6,7 @@
 #include "../h/RiscV.hpp"
 #include "../h/printing.hpp"
 
-class TCB {
+class _thread {
  public:
   // task is a pointer to a function that has no return value and takes one void* argument
   using Task = void (*)(void *);
@@ -14,15 +14,15 @@ class TCB {
     CREATED, READY, RUNNING, SUSPENDED, FINISHED
   };
 
-  static TCB *running;
+  static _thread *running;
 
-  ~TCB() { MemoryAllocator::get().mem_free(allocated_stack); }
+  ~_thread() { MemoryAllocator::get().mem_free(allocated_stack); }
 
-  static uint64 create_thread(TCB **handle, Task task, void *argument, uint64 *allocatedStack);
+  static uint64 create_thread(_thread **handle, Task task, void *argument, uint64 *allocatedStack);
   static int exit_thread();
   static void yield(); // implemented in _yield.S
   static void dispatch();
-  static void set_user_mode() { TCB::running_mode = RunningMode::USER; }
+  static void set_user_mode() { _thread::running_mode = RunningMode::USER; }
 
   void finish() { this->state = ThreadState::FINISHED; }
   bool is_finished() const { return this->state == ThreadState::FINISHED; }
@@ -38,8 +38,8 @@ class TCB {
     uint64 ra;
     uint64 sp;
   };
-  // stack is allocated before calling TCB::CreateThread. It is allocated in the C api syscall.
-  explicit TCB(TCB::Task task, void *argument, uint64 *allocated_stack);
+  // stack is allocated before calling _thread::CreateThread. It is allocated in the C api syscall.
+  explicit _thread(_thread::Task task, void *argument, uint64 *allocated_stack);
 
   static void context_switch(SavedContext *old_context, SavedContext *new_context); //implemented in _contextSwitch.s
   static void thread_wrapper();
@@ -54,7 +54,7 @@ class TCB {
   SavedContext saved_context = {0, 0};
   Task task = nullptr;
   uint64 *allocated_stack = nullptr;
-  TCB *parent_thread = nullptr;
+  _thread *parent_thread = nullptr;
   void *argument;
   bool is_parent_waiting = false;
 

@@ -108,16 +108,16 @@ bool UnitTest::test_dequeue() {
 bool UnitTest::test_synchronous_context_switching() {
   printString("------ Testing: test_synchronous_context_switching --------\n");
   thread_t threads[3];
-  TCB::create_thread(&threads[0], nullptr, nullptr, nullptr);
+  _thread::create_thread(&threads[0], nullptr, nullptr, nullptr);
   uint64 *stack1 = new uint64[DEFAULT_STACK_SIZE];
   uint64 *stack2 = new uint64[DEFAULT_STACK_SIZE];
-  TCB::running = threads[0];
-  TCB::create_thread(&threads[1], workerBodyA, nullptr, stack1);
+  _thread::running = threads[0];
+  _thread::create_thread(&threads[1], workerBodyA, nullptr, stack1);
   printString("Thread A created\n");
-  TCB::create_thread(&threads[2], workerBodyB, nullptr, stack2);
+  _thread::create_thread(&threads[2], workerBodyB, nullptr, stack2);
   printString("Thread B created\n");
   /*while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
-  TCB::yield();
+  _thread::yield();
 }*/
   threads[1]->join();
   threads[2]->join();
@@ -136,7 +136,7 @@ bool UnitTest::test_thread_create() {
     printString("Failed creating main thread.");
     return false;
   }
-  TCB::running = threads[0];
+  _thread::running = threads[0];
   if (thread_create(&threads[1], workerBodyA, nullptr) < 0) {
     printString("Failed creating A thread.");
     return false;
