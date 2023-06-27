@@ -18,7 +18,7 @@ int main() {
   //set mode to 1 (this enables vectored interrupts)
   RiscV::w_stvec(handlerAddress);
   //_thread::set_user_mode();
-  //-------------------------------------
+  //----------------------------------------
   MemoryAllocator &instance = MemoryAllocator::get();
   BlockHeader *free_head = (BlockHeader *) instance.get_free_head();
   size_t free_memory_at_start = free_head->size_in_bytes;
@@ -31,10 +31,6 @@ int main() {
   //TestRunner.test_dequeue();
   TestRunner.test_thread_create();
   //TestRunner.test_thread_create();
-   //RiscV::ms_sstatus(RiscV::SIP_SSIE);
-
-  //RiscV::mc_sstatus(RiscV::SIP_SSIE);
-
 
   print_free_memory(free_memory_at_start, free_head->size_in_bytes);
 

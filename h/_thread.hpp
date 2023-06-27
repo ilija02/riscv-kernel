@@ -23,8 +23,8 @@ class _thread {
   static void yield(); // implemented in _yield.S
   static void dispatch();
   static void set_user_mode() { _thread::running_mode = RunningMode::USER; }
+  static bool switch_to_user_mode(); // calls the necessary assembly instructions to pop the set the appropriate privilege level
 
-  void finish() { this->state = ThreadState::FINISHED; }
   bool is_finished() const { return this->state == ThreadState::FINISHED; }
   bool is_running() const { return this->state == ThreadState::RUNNING; }
   int join();
@@ -45,10 +45,11 @@ class _thread {
 
   static void context_switch(SavedContext *old_context, SavedContext *new_context); //implemented in _contextSwitch.s
   static void thread_wrapper();
-  static bool switch_to_user_mode(); // calls the necessary assembly instructions to pop the set the appropriate privilege level
+
 
   void suspend() { this->state = ThreadState::SUSPENDED; };
   void resume(){ this->state = ThreadState::READY;}
+  void finish() { this->state = ThreadState::FINISHED; }
   bool is_suspended() { return this->state == ThreadState::SUSPENDED; }
 
   static RunningMode running_mode;

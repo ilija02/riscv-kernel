@@ -48,7 +48,8 @@ void _thread::thread_wrapper() {
       printString("Changed privilege. \n");
     }*/
   _thread::running->task(_thread::running->argument);
-  exit_thread();
+  thread_exit();
+  //exit_thread();
 }
 
 int _thread::exit_thread() {
