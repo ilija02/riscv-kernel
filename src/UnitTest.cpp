@@ -5,9 +5,7 @@ UnitTest &UnitTest::get() {
   return instance;
 }
 
-UnitTest::UnitTest() {
-
-}
+sem_t semaphore = nullptr;
 
 bool UnitTest::test_memory_allocator() {
   MemoryAllocator &instance = MemoryAllocator::get();
@@ -113,11 +111,11 @@ bool UnitTest::test_synchronous_context_switching() {
   printString("Thread A created\n");
   _thread::create_thread(&threads[2], workerBodyB, nullptr, stack2);
   printString("Thread B created\n");
-  /*while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
+  while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
   _thread::yield();
-}*/
-  threads[1]->join();
-  threads[2]->join();
+}
+  //threads[1]->join();
+  //threads[2]->join();
   for (auto &thread: threads) delete thread;
   printString("----- Finished test: test_synchronous_context_switching -----\n");
   return true;
@@ -125,31 +123,67 @@ bool UnitTest::test_synchronous_context_switching() {
 
 bool UnitTest::test_thread_create() {
   printString("------Testing: test_thread_create --------\n");
-  thread_t threads[3] = {nullptr};
-  printString("Address of threads[0] :");
-  printInt((uint64) &threads[0], 16);
-  printString("\n");
+  thread_t threads[4] = {nullptr};
+
   if (thread_create(&threads[0], nullptr, nullptr) < 0) {
     printString("Failed creating main thread.");
     return false;
   }
   _thread::running = threads[0];
   if (thread_create(&threads[1], workerBodyA, nullptr) < 0) {
+    printString("Failed creating A1 thread.");
+    return false;
+  }
+  printString("Thread A1 created\n");
+
+  if (thread_create(&threads[2], workerBodyB, nullptr) < 0) {
+    printString("Failed creating B thread.");
+  }
+  if (thread_create(&threads[3], workerBodyA, nullptr) < 0) {
+    printString("Failed creating A2 thread.");
+  }
+  printString("Thread A2 created\n");
+  while (!(threads[1]->is_finished() && threads[2]->is_finished() && threads[3]->is_finished())) {
+    thread_dispatch();
+  }
+  //thread_join(threads[1]);
+  //thread_join(threads[2]);
+  for (auto &thread: threads) delete thread;
+  printString("----- Finished test: test_thread_create -----\n");
+  return true;
+}
+
+bool UnitTest::test_semaphore() {
+  printString("------Testing: test_semaphore --------\n");
+  thread_t threads[3] = {nullptr};
+
+  _sem::create_semaphore(&semaphore, 0);
+  if (thread_create(&threads[0], nullptr, nullptr) < 0) {
+    printString("Failed creating main thread.");
+    return false;
+  }
+  _thread::running = threads[0];
+
+  if (thread_create(&threads[1], sem_worker_b, nullptr) < 0) {
+    printString("Failed creating B thread.");
+    return false;
+  }
+  printString("Thread B created\n");
+  if (thread_create(&threads[2], sem_worker_a, nullptr) < 0) {
     printString("Failed creating A thread.");
     return false;
   }
   printString("Thread A created\n");
 
-  if (thread_create(&threads[2], workerBodyB, nullptr) < 0) {
-    printString("Failed creating B thread.");
-  }
-  printString("Thread B created\n");
-  /*while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
+
+  while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
     thread_dispatch();
-  }*/
-  thread_join(threads[1]);
-  thread_join(threads[2]);
+  }
+
   for (auto &thread: threads) delete thread;
-  printString("----- Finished test: test_thread_create -----\n");
+  printString("----- Finished test: test_semaphore -----\n");
+
+  delete semaphore;
   return true;
+
 }

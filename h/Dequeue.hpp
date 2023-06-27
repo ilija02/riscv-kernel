@@ -2,6 +2,7 @@
 #define LIST_HPP
 
 #include "MemoryAllocator.hpp"
+#include "../lib/mem.h"
 
 using size_t = decltype(sizeof(0));
 

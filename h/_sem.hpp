@@ -5,7 +5,7 @@
 // factory pattern
 class _sem {
  public:
-  static uint64 create_semaphore(_sem** handle, uint64 initial_value);
+  static uint64 create_semaphore(_sem** handle, uint32 initial_value = 1);
   int wait();
   int signal();
   long value() const { return val; };
@@ -22,9 +22,9 @@ class _sem {
 
  private:
   //initial value must be >= 0
-  explicit _sem(uint64 initial_value) : val(initial_value) {}
+  explicit _sem(uint32 initial_value) : val(initial_value) {}
   int val;
-  Dequeue<_thread*> blocked_threads;
+  Dequeue<_thread> blocked_threads;
 };
 
 #endif //_SEM_HPP_
