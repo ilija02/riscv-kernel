@@ -2,11 +2,13 @@
 #define BASE_TCB_HPP
 
 #include "../lib/hw.h"
+#include "../lib/mem.h"
 #include "../h/Scheduler.hpp"
 #include "../h/RiscV.hpp"
 #include "../h/printing.hpp"
 
 class _thread {
+  friend class _sem;
  public:
   // task is a pointer to a function that has no return value and takes one void* argument
   using Task = void (*)(void *);
@@ -34,6 +36,8 @@ class _thread {
   void *operator new[](size_t size) { return MemoryAllocator::get().mem_alloc(size); }
   void operator delete[](void *chunk)  { MemoryAllocator::get().mem_free(chunk); }
 
+
+
  private:
   enum RunningMode : uint64 { SYSTEM, USER };
   struct SavedContext {
@@ -50,8 +54,9 @@ class _thread {
   void suspend() { this->state = ThreadState::SUSPENDED; };
   void resume(){ this->state = ThreadState::READY;}
   void finish() { this->state = ThreadState::FINISHED; }
+  void block() {this->state = ThreadState::BLOCKED; }
   bool is_suspended() { return this->state == ThreadState::SUSPENDED; }
-
+  bool is_blocked() {return this->state == ThreadState::BLOCKED; }
   static RunningMode running_mode;
 
   ThreadState state = ThreadState::CREATED;

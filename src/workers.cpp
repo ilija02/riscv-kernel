@@ -1,6 +1,9 @@
 #include "../lib/hw.h"
 #include "../h/_thread.hpp"
 #include "../h/printing.hpp"
+#include"../h/_sem.hpp"
+
+extern sem_t semaphore;
 
 static uint64 fibonacci(uint64 n) {
   if (n == 0 || n == 1)
@@ -10,7 +13,6 @@ static uint64 fibonacci(uint64 n) {
 }
 
 void workerBodyA(void *) {
-    // __asm__ volatile ("sret"); // if the kernel panic happens when this line is uncommented that means that the user mode is working
   uint8 i = 0;
   for (; i < 3; i++)
   {
@@ -71,4 +73,18 @@ void workerBodyB(void *) {
   }
   printString("Worker B done\n");
   //thread_exit();
+}
+
+void sem_worker_a(void* ){
+
+  printString("sem_worker_a started. Signaling semaphore. \n");
+  semaphore->signal();
+  printString("sem_worker_a signaled the semaphore.\n");
+
+}
+
+void sem_worker_b(void *){
+  printString("sem_worker_b started. Waiting for semaphore.\n");
+  if(semaphore) semaphore->wait();
+  printString("sem_worker_b passed the semaphore.\n");
 }

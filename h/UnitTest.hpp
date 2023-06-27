@@ -4,7 +4,7 @@
 #include "../h/Dequeue.hpp"
 #include "../h/workers.hpp"
 #include "../h/_thread.hpp"
-
+#include  "../h/_sem.hpp"
 extern "C" void trapHandler();
 struct BlockHeader {
   BlockHeader *next;
@@ -24,8 +24,9 @@ public:
   static bool test_dequeue();
   static bool test_synchronous_context_switching();
   static bool test_thread_create();
+  static bool test_semaphore();
 private:
-  UnitTest();
+  UnitTest() = default;
 
 };
 

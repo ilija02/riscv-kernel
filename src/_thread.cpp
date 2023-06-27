@@ -18,15 +18,14 @@ _thread::_thread(_thread::Task task, void *argument, uint64 *allocated_stack) {
 
 void _thread::dispatch() {
   _thread *old_running = _thread::running;
-  if (!old_running->is_finished() && !old_running->is_suspended()) {
+  if (!old_running->is_finished() && !old_running->is_suspended() && !old_running->is_blocked()) {
     Scheduler::get().put_tcb(old_running);
-    old_running->state = READY;
-  }
-  else { // if the thread is finished and the parent is waiting for it, put the parent in the scheduler
-    if (old_running->parent_thread && old_running->is_parent_waiting){
-        old_running->is_parent_waiting = false;
-        old_running->parent_thread->resume();
-        Scheduler::get().put_tcb(old_running->parent_thread);
+    old_running->resume();
+  } else { // if the thread is finished and the parent is waiting for it, put the parent in the scheduler
+    if (old_running->parent_thread && old_running->is_parent_waiting) {
+      old_running->is_parent_waiting = false;
+      old_running->parent_thread->resume();
+      Scheduler::get().put_tcb(old_running->parent_thread);
     } //else delete old_running // if automatic deletion of exited threads is required uncomment this line. Note that the explicit deletion is then forbidden.
   }
   _thread::running = Scheduler::get().get_tcb();
@@ -43,13 +42,9 @@ int _thread::create_thread(_thread **handle, _thread::Task task, void *argument,
 
 void _thread::thread_wrapper() {
   if (_thread::running_mode == RunningMode::USER)
-   // _thread::switch_to_user_mode();
-    if (_thread::switch_to_user_mode()){
-      printString("Changed privilege. \n");
-    }
+    _thread::switch_to_user_mode();
   _thread::running->task(_thread::running->argument);
   thread_exit();
-  //exit_thread();
 }
 
 int _thread::exit_thread() {
@@ -69,12 +64,9 @@ int _thread::join() {
 }
 
 bool _thread::switch_to_user_mode() {
-  uint64 volatile sstatus = RiscV::r_sstatus();
-  if ( sstatus & RiscV::SSTATUS_SPP ){
-    RiscV::mc_sstatus(RiscV::SSTATUS_SPP);
-    __asm__ volatile ("csrw sepc, ra");
-    __asm__ volatile ("sret");
-    return true;
-  } else return false; //already in user mode */
+  RiscV::mc_sstatus(RiscV::SSTATUS_SPP);
+  __asm__ volatile ("csrw sepc, ra");
+  __asm__ volatile ("sret");
+  return true;
 }
 
