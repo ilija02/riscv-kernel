@@ -1,6 +1,8 @@
 #include "../h/TCB.hpp"
 
 TCB *TCB::running = nullptr;
+TCB::RunningMode TCB::running_mode = RunningMode::SYSTEM;
+
 TCB::TCB(TCB::Task task, void *argument, uint64 *allocated_stack) {
   if (task == nullptr) return;
   this->parent_thread = TCB::running;
@@ -39,6 +41,10 @@ uint64 TCB::create_thread(TCB **handle, TCB::Task task, void *argument, uint64 *
 }
 
 void TCB::thread_wrapper() {
+  if (TCB::running_mode == RunningMode::USER)
+    /*if (TCB::switch_to_user_mode()){
+      printString("Changed privilege. \n");
+    }*/
   TCB::running->task(TCB::running->argument);
   exit_thread();
 }
@@ -57,5 +63,16 @@ int TCB::join() {
   this->parent_thread->suspend();
   TCB::yield();
   return 0;
+}
+
+bool TCB::switch_to_user_mode() {
+  uint64 volatile sstatus = RiscV::r_sstatus();
+  if ( sstatus & RiscV::SSTATUS_SPP ){
+    RiscV::mc_sstatus(RiscV::SSTATUS_SPP);
+    __asm__ volatile ("csrw sepc, ra");
+    __asm__ volatile ("sret");
+    return true;
+  } else return false; //already in user mode */
+ return false;
 }
 

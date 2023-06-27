@@ -18,6 +18,7 @@ uint64 perform_syscall(uint64 syscall_id, void* a1 = nullptr, void* a2= nullptr,
   return_value = RiscV::r_a0();
   return return_value;
 }
+
 void *mem_alloc(size_t size) {
   return (void*)perform_syscall(SyscallID::MEM_ALLOC, (void*)size);
 }
@@ -34,12 +35,15 @@ int thread_create(thread_t *handle, void (*start_routine)(void *), void *arg) {
   }
   return (int) perform_syscall(SyscallID::THREAD_CREATE , (void*) handle, (void*)start_routine, (void*)arg, (void*) allocated_stack);
 }
+
 int thread_exit() {
   return perform_syscall(SyscallID::THREAD_EXIT);
 }
+
 void thread_dispatch() {
   perform_syscall(SyscallID::THREAD_DISPATCH);
 }
+
 void thread_join(thread_t handle) {
   perform_syscall(SyscallID::THREAD_JOIN, handle);
 }
