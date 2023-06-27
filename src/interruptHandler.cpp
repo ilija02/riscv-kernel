@@ -20,7 +20,7 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
   if (!processSyscall) return 0;
   // Note: The return value of the corresponding kernel functions is implicitly stored in a0, and then collected from a0 by corresponding C api call.
   if (syscall_id == SyscallID::MEM_ALLOC)
-    ret_val = (uint64 )MemoryAllocator::get().mem_alloc((uint64) a1); //a1 - size param
+    ret_val = (uint64) MemoryAllocator::get().mem_alloc((uint64) a1); //a1 - size param
 
   else if (syscall_id == SyscallID::MEM_FREE)
     ret_val = MemoryAllocator::get().mem_free(a1); //a1 - chunk
@@ -28,15 +28,24 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
   else if (syscall_id == SyscallID::THREAD_CREATE)
     // a1 - handle, a2 - start_routine, a3 - argument, a4 - allocated stack
     ret_val = TCB::create_thread((TCB **) a1, (TCB::Task) a2, a3, (uint64 *) a4);
-  else if (syscall_id==SyscallID::THREAD_EXIT)
+  else if (syscall_id == SyscallID::THREAD_EXIT)
     ret_val = TCB::exit_thread();
-  else if (syscall_id==SyscallID::THREAD_DISPATCH){
-      uint64 volatile sepc = RiscV::r_sepc();
-      uint64 volatile sstatus = RiscV::r_sstatus();
-      TCB::dispatch();
-      RiscV::w_sepc(sepc);
-      RiscV::w_sstatus(sstatus);
+  else if (syscall_id == SyscallID::THREAD_DISPATCH) {
+    uint64 volatile sepc = RiscV::r_sepc();
+    uint64 volatile sstatus = RiscV::r_sstatus();
+    TCB::dispatch();
+    RiscV::w_sepc(sepc);
+    RiscV::w_sstatus(sstatus);
+  } else if (syscall_id == SyscallID::THREAD_JOIN) {
+    if (a1 == nullptr) return ret_val;
+    uint64 volatile sepc = RiscV::r_sepc();
+    uint64 volatile sstatus = RiscV::r_sstatus();
+    ret_val = ((TCB *) a1)->join();
+    RiscV::w_sepc(sepc);
+    RiscV::w_sstatus(sstatus);
   }
+
+  //a1 - thread to perform a join on
 
   // There's no need to clear the SSIP bit as in other handlers because interrupt bit is not set.
   return ret_val;

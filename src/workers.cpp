@@ -40,6 +40,7 @@ void workerBodyA(void *) {
     printInt(i);
     printString("\n");
   }
+  printString("Worker A done\n");
   thread_exit();
 }
 

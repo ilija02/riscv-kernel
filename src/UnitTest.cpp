@@ -47,8 +47,7 @@ bool UnitTest::test_new_delete() {
   t->y = 10;
 
   uint64 *arr = new uint64[1000];
-  for (int i = 0; i < 1000; i++)
-  {
+  for (int i = 0; i < 1000; i++) {
     arr[i] = i;
   }
   free_head = (BlockHeader *) instance.get_free_head();
@@ -105,6 +104,7 @@ bool UnitTest::test_dequeue() {
   dequeue.pop_back();
   return true;
 }
+
 bool UnitTest::test_synchronous_context_switching() {
   printString("------ Testing: test_synchronous_context_switching --------\n");
   thread_t threads[3];
@@ -112,44 +112,47 @@ bool UnitTest::test_synchronous_context_switching() {
   uint64 *stack1 = new uint64[DEFAULT_STACK_SIZE];
   uint64 *stack2 = new uint64[DEFAULT_STACK_SIZE];
   TCB::running = threads[0];
-  TCB::create_thread(&threads[1],workerBodyA, nullptr, stack1);
+  TCB::create_thread(&threads[1], workerBodyA, nullptr, stack1);
   printString("Thread A created\n");
   TCB::create_thread(&threads[2], workerBodyB, nullptr, stack2);
   printString("Thread B created\n");
-  while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
-    TCB::yield();
-  }
-
+  /*while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
+  TCB::yield();
+}*/
+  threads[1]->join();
+  threads[2]->join();
   for (auto &thread: threads) delete thread;
   printString("----- Finished test: test_synchronous_context_switching -----\n");
   return true;
 }
+
 bool UnitTest::test_thread_create() {
   printString("------Testing: test_thread_create --------\n");
   thread_t threads[3] = {nullptr};
   printString("Address of threads[0] :");
-  printInt((uint64)&threads[0], 16);
+  printInt((uint64) &threads[0], 16);
   printString("\n");
-  if (thread_create(&threads[0], nullptr, nullptr) < 0){
+  if (thread_create(&threads[0], nullptr, nullptr) < 0) {
     printString("Failed creating main thread.");
     return false;
   }
   TCB::running = threads[0];
-  if (thread_create(&threads[1], workerBodyA, nullptr) < 0){
+  if (thread_create(&threads[1], workerBodyA, nullptr) < 0) {
     printString("Failed creating A thread.");
     return false;
   }
   printString("Thread A created\n");
 
-  if (thread_create(&threads[2], workerBodyB, nullptr) < 0 ){
+  if (thread_create(&threads[2], workerBodyB, nullptr) < 0) {
     printString("Failed creating B thread.");
   }
   printString("Thread B created\n");
-  while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
-    TCB::yield();
-  }
-
- for (auto &thread: threads) delete thread;
+  /*while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
+    thread_dispatch();
+  }*/
+  thread_join(threads[1]);
+  thread_join(threads[2]);
+  for (auto &thread: threads) delete thread;
   printString("----- Finished test: test_thread_create -----\n");
   return true;
 }
