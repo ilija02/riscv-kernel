@@ -56,7 +56,7 @@ void workerBodyB(void *) {
   __asm__ ("li t1, 5");
   //TCB::yield();
   thread_dispatch();
-  uint64 result = fibonacci(30);
+  uint64 result = fibonacci(25); //75025
   printString("B: fibonaci=");
   printInt(result);
   printString("\n");
@@ -67,5 +67,6 @@ void workerBodyB(void *) {
     printInt(i);
     printString("\n");
   }
+  printString("Worker B done\n");
   //thread_exit();
 }
