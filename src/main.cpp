@@ -3,12 +3,21 @@
 #include "../h/printing.hpp"
 extern "C" void trapHandler();
 
+
+void print_free_memory(uint64 free_memory_at_start, uint64 free_memory_at_end ){
+  printString("start free memory:  ");
+  printInt(free_memory_at_start);
+  printString("\t");
+  printString("end free memory:  ");
+  printInt(free_memory_at_end);
+  printString("\n");
+}
 int main() {
   uint64 volatile
       handlerAddress = (uint64) &trapHandler | 0x01; //set the base address for interrupts to trap handler and
   //set mode to 1 (this enables vectored interrupts)
   RiscV::w_stvec(handlerAddress);
-  TCB::set_user_mode();
+  //TCB::set_user_mode();
   //-------------------------------------
   MemoryAllocator &instance = MemoryAllocator::get();
   BlockHeader *free_head = (BlockHeader *) instance.get_free_head();
@@ -25,15 +34,9 @@ int main() {
 
   //RiscV::mc_sstatus(RiscV::SIP_SSIE);
 
-  //-----------------------------
-  size_t free_memory_at_end = free_head->size_in_bytes;
-  printString("start free memory:  ");
-  printInt(free_memory_at_start);
-  printString("\t");
-  printString("end free memory:  ");
-  printInt(free_memory_at_end);
-  printString("\n");
-  //-----------------------------
+
+  print_free_memory(free_memory_at_start, free_head->size_in_bytes);
+
   return 0;
 }
 
