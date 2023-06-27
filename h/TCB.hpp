@@ -5,7 +5,7 @@
 #include "../h/Scheduler.hpp"
 #include "../h/RiscV.hpp"
 class TCB {
-public:
+ public:
   // task is a pointer to a function that has no return value and takes one void* argument
   using Task = void (*)(void *);
   enum ThreadState {
@@ -15,20 +15,20 @@ public:
 
   ~TCB() { MemoryAllocator::get().mem_free(allocated_stack); }
 
-  static uint64 create_thread(TCB** handle, Task task, void *argument, uint64 *allocatedStack);
+  static uint64 create_thread(TCB **handle, Task task, void *argument, uint64 *allocatedStack);
   static int exit_thread();
   static void yield(); // implemented in _yield.S
   static void dispatch();
 
   void finish() { this->state = ThreadState::FINISHED; }
   bool is_finished() const { return this->state == ThreadState::FINISHED; }
-  bool is_running() const {return this->state == ThreadState::RUNNING; }
+  bool is_running() const { return this->state == ThreadState::RUNNING; }
   int join();
 
   void *operator new(size_t size) { return MemoryAllocator::get().mem_alloc(size); }
   void operator delete(void *chunk) { MemoryAllocator::get().mem_free(chunk); }
 
-private:
+ private:
   struct SavedContext {
     uint64 ra;
     uint64 sp;
@@ -40,11 +40,16 @@ private:
 
   static void context_switch(SavedContext *old_context, SavedContext *new_context); //implemented in _contextSwitch.s
   static void thread_wrapper();
+
+  void suspend() { this->state = ThreadState::SUSPENDED; };
+  bool is_suspended() { return this->state == ThreadState::SUSPENDED; }
   ThreadState state = ThreadState::CREATED;
-  SavedContext saved_context = {0,0};
+  SavedContext saved_context = {0, 0};
   Task task = nullptr;
-  void* argument;
   uint64 *allocated_stack = nullptr;
+  TCB *parent_thread = nullptr;
+  void *argument;
+  bool is_parent_waiting = false;
 };
 
 #endif //BASE_TCB_HPP

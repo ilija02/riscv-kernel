@@ -41,5 +41,5 @@ void thread_dispatch() {
   perform_syscall(SyscallID::THREAD_DISPATCH);
 }
 void thread_join(thread_t handle) {
-
+  perform_syscall(SyscallID::THREAD_JOIN, handle);
 }
