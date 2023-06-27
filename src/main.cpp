@@ -18,7 +18,7 @@ int main() {
   //set mode to 1 (this enables vectored interrupts)
   RiscV::w_stvec(handlerAddress);
   _thread::enable_user_mode(); // all threads created after this call will be user threads.
-
+  //RiscV::ms_sstatus(RiscV::SSTATUS_SIE);
   //----------------------------------------
   MemoryAllocator &instance = MemoryAllocator::get();
   BlockHeader *free_head = (BlockHeader *) instance.get_free_head();

@@ -19,12 +19,12 @@ struct TestStruct {
 class UnitTest {
 public:
   static UnitTest &get();
-  static bool test_memory_allocator();
-  static bool test_new_delete();
-  static bool test_dequeue();
-  static bool test_synchronous_context_switching();
-  static bool test_thread_create();
-  static bool test_semaphore();
+   bool test_memory_allocator();
+   bool test_new_delete();
+   bool test_dequeue();
+   bool test_synchronous_context_switching();
+   bool test_thread_create();
+   bool test_semaphore();
 private:
   UnitTest() = default;
 
