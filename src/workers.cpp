@@ -14,6 +14,11 @@ static uint64 fibonacci(uint64 n) {
 
 void workerBodyA(void *) {
   uint8 i = 0;
+  /*
+  volatile uint64 dummy = 0;
+  for (int i = 0; i < 1000000000; ++i) {
+    dummy += i; // Dummy operation to prevent optimization
+  }*/ //uncomment this code to test if the timer can interrupt
   for (; i < 3; i++)
   {
     printString("A: i=");

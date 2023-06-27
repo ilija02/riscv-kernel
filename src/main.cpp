@@ -17,9 +17,7 @@ int main() {
       handlerAddress = (uint64) &trapHandler | 0x01; //set the base address for interrupts to trap handler and
   //set mode to 1 (this enables vectored interrupts)
   RiscV::w_stvec(handlerAddress);
-  //RiscV::ms_sstatus(RiscV::SIP_SSIE);
-  //_thread::set_user_mode();
-
+  _thread::enable_user_mode(); // all threads created after this call will be user threads.
 
   //----------------------------------------
   MemoryAllocator &instance = MemoryAllocator::get();
@@ -27,13 +25,13 @@ int main() {
   size_t free_memory_at_start = free_head->size_in_bytes;
   //--------------------------------------
 
-  UnitTest& TestRunner = UnitTest::get();
+  UnitTest &TestRunner = UnitTest::get();
 
   //TestRunner.test_synchronous_context_switching();
-  //TestRunner.test_new_delete();
+   //TestRunner.test_new_delete();
   //TestRunner.test_dequeue();
   //TestRunner.test_thread_create();
-  //TestRunner.test_thread_create();
+
   TestRunner.test_semaphore();
   print_free_memory(free_memory_at_start, free_head->size_in_bytes);
 

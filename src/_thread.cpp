@@ -1,7 +1,7 @@
 #include "../h/_thread.hpp"
 
 _thread *_thread::running = nullptr;
-_thread::RunningMode _thread::running_mode = RunningMode::SYSTEM;
+bool _thread::is_user_mode_enabled = false;
 
 _thread::_thread(_thread::Task task, void *argument, uint64 *allocated_stack) {
   if (task == nullptr) return;
@@ -41,7 +41,7 @@ int _thread::create_thread(_thread **handle, _thread::Task task, void *argument,
 }
 
 void _thread::thread_wrapper() {
-  if (_thread::running_mode == RunningMode::USER)
+  if(is_user_mode_enabled)
     _thread::switch_to_user_mode();
   _thread::running->task(_thread::running->argument);
   thread_exit();
@@ -64,9 +64,8 @@ int _thread::join() {
 }
 
 bool _thread::switch_to_user_mode() {
-  RiscV::mc_sstatus(RiscV::SSTATUS_SPP);
-  __asm__ volatile ("csrw sepc, ra");
-  __asm__ volatile ("sret");
+  RiscV::w_a0(SyscallID::SWITCH_TO_USER);
+  RiscV::ecall();
   return true;
 }
 

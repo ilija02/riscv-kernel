@@ -123,7 +123,7 @@ bool UnitTest::test_synchronous_context_switching() {
 
 bool UnitTest::test_thread_create() {
   printString("------Testing: test_thread_create --------\n");
-  thread_t threads[4] = {nullptr};
+  thread_t threads[3] = {nullptr};
 
   if (thread_create(&threads[0], nullptr, nullptr) < 0) {
     printString("Failed creating main thread.");
@@ -131,19 +131,17 @@ bool UnitTest::test_thread_create() {
   }
   _thread::running = threads[0];
   if (thread_create(&threads[1], workerBodyA, nullptr) < 0) {
-    printString("Failed creating A1 thread.");
+    printString("Failed creating A thread.");
     return false;
   }
-  printString("Thread A1 created\n");
+  printString("Thread A created\n");
 
   if (thread_create(&threads[2], workerBodyB, nullptr) < 0) {
     printString("Failed creating B thread.");
   }
-  if (thread_create(&threads[3], workerBodyA, nullptr) < 0) {
-    printString("Failed creating A2 thread.");
-  }
-  printString("Thread A2 created\n");
-  while (!(threads[1]->is_finished() && threads[2]->is_finished() && threads[3]->is_finished())) {
+  printString("Thread B created.\n");
+
+  while (!(threads[1]->is_finished() && threads[2]->is_finished() )) {
     thread_dispatch();
   }
   //thread_join(threads[1]);

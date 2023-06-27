@@ -13,6 +13,7 @@ enum SyscallID : uint64 {
   SEM_SIGNAL = 0x24,
   TIME_SLEEP = 0x31,
   GETC = 0x41,
-  PUTC = 0X42
+  PUTC = 0X42,
+  SWITCH_TO_USER = 0x100
 };
 #endif //SYSCALL_ID_HPP

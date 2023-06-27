@@ -37,7 +37,6 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
     processSyscall = 1;
     //if (scause==IRQ_SYSCALL_USER_MODE) printString("User mode happened. \n");
   }
-
   if (!processSyscall) print_diagnostics(); //exception happened
   // Note: The return value of the corresponding kernel functions is implicitly stored in a0, and then collected from a0 by corresponding C api call.
   if (syscall_id == SyscallID::MEM_ALLOC)
@@ -64,6 +63,8 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
     ret_val = ((_thread *) a1)->join();
     RiscV::w_sepc(sepc);
     RiscV::w_sstatus(sstatus);
+  } else if(syscall_id == SyscallID::SWITCH_TO_USER){
+    RiscV::mc_sstatus(RiscV::SSTATUS_SPP);
   }
 
   //a1 - thread to perform a join on
