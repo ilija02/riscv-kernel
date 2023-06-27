@@ -1,7 +1,3 @@
-//
-// Created by os on 5/18/22.
-//
-
 #include "../h/printing.hpp"
 
 void printString(char const *string) {

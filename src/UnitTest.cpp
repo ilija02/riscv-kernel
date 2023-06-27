@@ -1,7 +1,4 @@
 #include "../h/UnitTest.hpp"
-#include "../h/syscall_c.h"
-#include "../h/printing.hpp"
-#include "../h/RiscV.hpp"
 
 UnitTest &UnitTest::get() {
   static UnitTest instance;

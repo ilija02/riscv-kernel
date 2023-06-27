@@ -11,14 +11,14 @@ class _thread {
   // task is a pointer to a function that has no return value and takes one void* argument
   using Task = void (*)(void *);
   enum ThreadState {
-    CREATED, READY, RUNNING, SUSPENDED, FINISHED
+    CREATED, READY, RUNNING, SUSPENDED, BLOCKED, FINISHED
   };
 
   static _thread *running;
 
   ~_thread() { MemoryAllocator::get().mem_free(allocated_stack); }
 
-  static uint64 create_thread(_thread **handle, Task task, void *argument, uint64 *allocatedStack);
+  static int create_thread(_thread **handle, Task task, void *argument, uint64 *allocatedStack);
   static int exit_thread();
   static void yield(); // implemented in _yield.S
   static void dispatch();
@@ -31,6 +31,8 @@ class _thread {
 
   void *operator new(size_t size) { return MemoryAllocator::get().mem_alloc(size); }
   void operator delete(void *chunk) { MemoryAllocator::get().mem_free(chunk); }
+  void *operator new[](size_t size) { return MemoryAllocator::get().mem_alloc(size); }
+  void operator delete[](void *chunk)  { MemoryAllocator::get().mem_free(chunk); }
 
  private:
   enum RunningMode : uint64 { SYSTEM, USER };
@@ -46,6 +48,7 @@ class _thread {
   static bool switch_to_user_mode(); // calls the necessary assembly instructions to pop the set the appropriate privilege level
 
   void suspend() { this->state = ThreadState::SUSPENDED; };
+  void resume(){ this->state = ThreadState::READY;}
   bool is_suspended() { return this->state == ThreadState::SUSPENDED; }
 
   static RunningMode running_mode;
