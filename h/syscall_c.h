@@ -3,7 +3,7 @@
 #include "../lib/hw.h"
 #include "../h/syscall_id.hpp"
 #include "../h/RiscV.hpp"
-#include "../h/TCB.hpp"
+#include "../h/_thread.hpp"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -22,7 +22,7 @@ void *mem_alloc(size_t size);
 int mem_free(void *);
 
 class _thread;
-typedef TCB *thread_t;
+typedef _thread *thread_t;
 /**
  *Starts a thread which runs a function start_routine with argument arg
 _thread).

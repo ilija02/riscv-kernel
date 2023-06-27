@@ -9,10 +9,10 @@ Scheduler &Scheduler::get() {
   return instance;
 }
 
-TCB *Scheduler::get_tcb() {
+_thread *Scheduler::get_tcb() {
   return ready_queue.pop_front();
 }
 
-void Scheduler::put_tcb(TCB *tcb) {
+void Scheduler::put_tcb(_thread *tcb) {
   ready_queue.push_back(tcb);
 }

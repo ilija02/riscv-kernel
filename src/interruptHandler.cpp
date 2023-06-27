@@ -45,20 +45,20 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
 
   else if (syscall_id == SyscallID::THREAD_CREATE)
     // a1 - handle, a2 - start_routine, a3 - argument, a4 - allocated stack
-    ret_val = TCB::create_thread((TCB **) a1, (TCB::Task) a2, a3, (uint64 *) a4);
+    ret_val = _thread::create_thread((_thread **) a1, (_thread::Task) a2, a3, (uint64 *) a4);
   else if (syscall_id == SyscallID::THREAD_EXIT)
-    ret_val = TCB::exit_thread();
+    ret_val = _thread::exit_thread();
   else if (syscall_id == SyscallID::THREAD_DISPATCH) {
     uint64 volatile sepc = RiscV::r_sepc();
     uint64 volatile sstatus = RiscV::r_sstatus();
-    TCB::dispatch();
+    _thread::dispatch();
     RiscV::w_sepc(sepc);
     RiscV::w_sstatus(sstatus);
   } else if (syscall_id == SyscallID::THREAD_JOIN) {
     if (a1 == nullptr) return ret_val;
     uint64 volatile sepc = RiscV::r_sepc();
     uint64 volatile sstatus = RiscV::r_sstatus();
-    ret_val = ((TCB *) a1)->join();
+    ret_val = ((_thread *) a1)->join();
     RiscV::w_sepc(sepc);
     RiscV::w_sstatus(sstatus);
   }

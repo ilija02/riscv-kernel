@@ -3,7 +3,7 @@
 #include "../h/MemoryAllocator.hpp"
 #include "../h/Dequeue.hpp"
 #include "../h/workers.hpp"
-#include "../h/TCB.hpp"
+#include "../h/_thread.hpp"
 
 extern "C" void trapHandler();
 struct BlockHeader {
