@@ -42,6 +42,7 @@ uint64 TCB::create_thread(TCB **handle, TCB::Task task, void *argument, uint64 *
 
 void TCB::thread_wrapper() {
   if (TCB::running_mode == RunningMode::USER)
+    TCB::switch_to_user_mode();
     /*if (TCB::switch_to_user_mode()){
       printString("Changed privilege. \n");
     }*/
