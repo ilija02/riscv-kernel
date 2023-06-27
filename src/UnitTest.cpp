@@ -111,11 +111,11 @@ bool UnitTest::test_synchronous_context_switching() {
   printString("Thread A created\n");
   _thread::create_thread(&threads[2], workerBodyB, nullptr, stack2);
   printString("Thread B created\n");
-  while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
+  /*while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
   _thread::yield();
-}
-  //threads[1]->join();
-  //threads[2]->join();
+}*/
+  threads[1]->join();
+  threads[2]->join();
   for (auto &thread: threads) delete thread;
   printString("----- Finished test: test_synchronous_context_switching -----\n");
   return true;
@@ -141,11 +141,11 @@ bool UnitTest::test_thread_create() {
   }
   printString("Thread B created.\n");
 
-  while (!(threads[1]->is_finished() && threads[2]->is_finished() )) {
+  /*while (!(threads[1]->is_finished() && threads[2]->is_finished() )) {
     thread_dispatch();
-  }
-  //thread_join(threads[1]);
-  //thread_join(threads[2]);
+  }*/
+  thread_join(threads[1]);
+  thread_join(threads[2]);
   for (auto &thread: threads) delete thread;
   printString("----- Finished test: test_thread_create -----\n");
   return true;

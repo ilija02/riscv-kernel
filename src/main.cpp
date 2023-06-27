@@ -27,12 +27,12 @@ int main() {
 
   UnitTest &TestRunner = UnitTest::get();
 
-  //TestRunner.test_synchronous_context_switching();
+  TestRunner.test_synchronous_context_switching();
    //TestRunner.test_new_delete();
   //TestRunner.test_dequeue();
-  //TestRunner.test_thread_create();
+  TestRunner.test_thread_create();
 
-  TestRunner.test_semaphore();
+  //TestRunner.test_semaphore();
   print_free_memory(free_memory_at_start, free_head->size_in_bytes);
 
   return 0;
