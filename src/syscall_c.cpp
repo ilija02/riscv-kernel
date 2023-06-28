@@ -68,6 +68,18 @@ int sem_wait(sem_t id) {
 int sem_signal(sem_t id) {
   return (int) perform_syscall(SyscallID::SEM_SIGNAL, (void *) id);
 }
+
+int time_sleep(time_t time) {
+  //TODO implement function
+  return 0;
+}
+
 char getc() {
-  return __getc();
+  return perform_syscall(SyscallID::GETC);
+ // return __getc();
+}
+
+void putc(char c){
+  perform_syscall(SyscallID::PUTC, (void *) ((uint64) c));
+  //__putc(c);
 }
