@@ -83,13 +83,13 @@ void workerBodyB(void *) {
 void sem_worker_a(void* ){
 
   printString("sem_worker_a started. Signaling semaphore. \n");
-  semaphore->signal();
+  sem_signal(semaphore);
   printString("sem_worker_a signaled the semaphore.\n");
 
 }
 
 void sem_worker_b(void *){
   printString("sem_worker_b started. Waiting for semaphore.\n");
-  if(semaphore) semaphore->wait();
+  if(semaphore) sem_wait(semaphore);
   printString("sem_worker_b passed the semaphore.\n");
 }

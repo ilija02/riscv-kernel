@@ -21,11 +21,22 @@ void _sem::unblock() {
 }
 
 int _sem::wait() {
+  if (is_closed) return -1;
   if (--this->val < 0) block();
   return 0;
 }
 
 int _sem::signal() {
+  if (is_closed) return -1;
   if (++this->val <= 0) this->unblock();
   return 0;
+}
+
+_sem::~_sem() {
+  while(this->blocked_threads.front() != nullptr){
+    _thread* unblocked_thread = blocked_threads.pop_front();
+    unblocked_thread->resume();
+    Scheduler::get().put_tcb(unblocked_thread);
+  }
+  this->is_closed = true;
 }

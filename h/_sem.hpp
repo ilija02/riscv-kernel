@@ -5,6 +5,7 @@
 // factory pattern
 class _sem {
  public:
+  ~_sem();
   static uint64 create_semaphore(_sem** handle, uint32 initial_value = 1);
   int wait();
   int signal();
@@ -24,6 +25,7 @@ class _sem {
   //initial value must be >= 0
   explicit _sem(uint32 initial_value) : val(initial_value) {}
   int val;
+  bool is_closed = false;
   Dequeue<_thread> blocked_threads;
 };
 
