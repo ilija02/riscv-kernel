@@ -2,7 +2,7 @@
 #define  INTERRUPT_HANDLER_HPP
 #include "../lib/hw.h"
 #include "../h/RiscV.hpp"
-#include "../h/printing.hpp"
+#include "../h/print.hpp"
 #include "../h/syscall_id.hpp"
 #include "../h/MemoryAllocator.hpp"
 #include "../h/_thread.hpp"

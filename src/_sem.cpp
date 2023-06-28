@@ -25,25 +25,31 @@ void _sem::unblock()
 
 int _sem::wait()
 {
-	if (is_closed) return -1;
+	//probably have to fix this as it should return -1 when the semaphore is closed, but when it's closed the memory is
+	// deallocated and it's use-after-free
 	if (--this->val < 0) block();
+	if(_thread::running->wait_returns_error) {
+		_thread::running->wait_returns_error = false;
+		return -1;
+	}
 	return 0;
 }
 
 int _sem::signal()
 {
-	if (is_closed) return -1;
+
 	if (++this->val <= 0) this->unblock();
 	return 0;
 }
 
-_sem::~_sem()
+void _sem::close()
 {
 	while (this->blocked_threads.front() != nullptr)
 	{
 		_thread* unblocked_thread = blocked_threads.pop_front();
 		unblocked_thread->resume();
+		unblocked_thread->wait_returns_error = true;
 		Scheduler::get().put_tcb(unblocked_thread);
 	}
-	this->is_closed = true;
+
 }

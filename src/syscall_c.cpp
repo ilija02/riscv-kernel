@@ -68,3 +68,6 @@ int sem_wait(sem_t id) {
 int sem_signal(sem_t id) {
   return (int) perform_syscall(SyscallID::SEM_SIGNAL, (void *) id);
 }
+char getc() {
+  return __getc();
+}
