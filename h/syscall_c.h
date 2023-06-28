@@ -13,16 +13,16 @@ extern "C" {
  * @param size minimum number of bytes to allocate
  * @return If allocation is successful returns a pointer to the allocated chunk, else returns null
  */
-void *mem_alloc(size_t size);
+void* mem_alloc(size_t size);
 
 /**
  * Frees a chunk of memory previously allocated by mem_alloc
  * @return 0 if operations was successful or a value less than 0 if an error occurred
  */
-int mem_free(void *);
+int mem_free(void*);
 
 class _thread;
-typedef _thread *thread_t;
+typedef _thread* thread_t;
 /**
  *Starts a thread which runs a function start_routine with argument arg
 _thread).
@@ -32,9 +32,9 @@ _thread).
  * @return  If successful , handle gets the value of the newly created thread and the function returns 0, else value less than 0
  */
 int thread_create(
-    thread_t *handle,
-    void(*start_routine)(void *),
-    void *arg
+	thread_t* handle,
+	void(* start_routine)(void*),
+	void* arg
 );
 
 /**
@@ -53,11 +53,11 @@ void thread_dispatch();
  * @param handle thread to wait for
  */
 void thread_join(
-    thread_t handle
+	thread_t handle
 );
 
 class _sem;
-typedef _sem *sem_t;
+typedef _sem* sem_t;
 /**
  * Creates a new semaphore
  * @param handle handle of the newly created semaphore
@@ -65,8 +65,8 @@ typedef _sem *sem_t;
  * @return If successful 0, else value less than 0
  */
 int sem_open(
-    sem_t *handle,
-    unsigned init
+	sem_t* handle,
+	unsigned init
 );
 
 /**

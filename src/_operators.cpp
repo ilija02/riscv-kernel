@@ -6,22 +6,26 @@
 
 using size_t = decltype(sizeof(0));
 
-void *operator new(size_t size) {
-  return mem_alloc(size);
+void* operator new(size_t size)
+{
+	return mem_alloc(size);
 }
 
-void *operator new[](size_t size) {
-  return mem_alloc(size);
+void* operator new[](size_t size)
+{
+	return mem_alloc(size);
 }
 
-void operator delete(void *chunk)
+void operator delete(void* chunk)
 
-noexcept {
-mem_free(chunk);
+noexcept
+{
+	mem_free(chunk);
 }
 
-void operator delete[](void *chunk)
+void operator delete[](void* chunk)
 
-noexcept {
-mem_free(chunk);
+noexcept
+{
+	mem_free(chunk);
 }
