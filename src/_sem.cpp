@@ -17,6 +17,7 @@ void _sem::unblock() {
   _thread* unblocked_thread = blocked_threads.pop_front();
   unblocked_thread->resume(); // set state to ready
   Scheduler::get().put_tcb(unblocked_thread);
+
 }
 
 int _sem::wait() {
