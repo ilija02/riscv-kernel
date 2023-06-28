@@ -43,6 +43,7 @@ void Thread::join()
 {
 	thread_join(myHandle);
 }
+
 void Thread::dispatch()
 {
 	thread_dispatch();
@@ -53,6 +54,11 @@ Thread::Thread()
 	this->myHandle = nullptr;
 	this->body = nullptr;
 	this->arg  = nullptr;
+}
+int Thread::sleep(time_t)
+{
+	//TODO: implement method
+	return 0;
 }
 
 Semaphore::Semaphore(unsigned int init)
@@ -77,11 +83,12 @@ int Semaphore::signal()
 
 char Console::getc()
 {
-	return __getc();
+	return ::getc();
 }
+
 void Console::putc(char c)
 {
-	__putc(c);
+	::putc(c);
 }
 
 

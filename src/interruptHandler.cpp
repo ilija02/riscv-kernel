@@ -70,7 +70,8 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void* a1, void* a2, vo
 	}
 	else if (syscall_id == SyscallID::SEM_OPEN)
 		ret_val = _sem::create_semaphore((_sem**)a1, (uint64)a2);
-	else if (syscall_id == SyscallID::SEM_CLOSE){
+	else if (syscall_id == SyscallID::SEM_CLOSE)
+	{
 		((sem_t)a1)->close();
 		ret_val = MemoryAllocator::get().mem_free((sem_t)a1);
 	}
@@ -83,6 +84,14 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void* a1, void* a2, vo
 	{
 		SAVE_SSTATUS_SEPC({ ret_val = ((sem_t)a1)->signal(); })
 	}
+	else if (syscall_id == SyscallID::PUTC)
+	{
+		SAVE_SSTATUS_SEPC({ __putc((uint64)a1); })
+	}
+	else if (syscall_id == SyscallID::GETC)
+	{
+		SAVE_SSTATUS_SEPC({ ret_val = (uint64)__getc(); })
+	}
 	else if (syscall_id == SyscallID::SWITCH_TO_USER)
 		RiscV::mc_sstatus(RiscV::SSTATUS_SPP);
 
@@ -93,6 +102,8 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void* a1, void* a2, vo
 
 extern "C" void handleTimerTrap()
 {
+	RiscV::mc_sip(RiscV::SIP_SSIE);
+	return;
 	static uint64 counter = 0;
 	static uint64 seconds = 0;
 	const uint64 volatile scause = RiscV::r_scause();
@@ -115,4 +126,5 @@ extern "C" void handleTimerTrap()
 extern "C" void handleKeyboardTrap()
 {
 	console_handler();
+	RiscV::mc_sip(RiscV::SIP_SSIE);
 }

@@ -2,15 +2,10 @@
 #include "../h/_thread.hpp"
 
 extern "C" void trapHandler();
+extern void userMain();
 
-void print_free_memory(uint64 free_memory_at_start, uint64 free_memory_at_end)
-{
-	print_string("start free memory:  ");
-	print_int(free_memory_at_start);
-	print_string("\t");
-	print_string("end free memory:  ");
-	print_int(free_memory_at_end);
-	print_string("\n");
+void user_main_wrapper(void*){
+	userMain();
 }
 
 int main()
@@ -19,9 +14,17 @@ int main()
 		handlerAddress = (uint64)&trapHandler | 0x01; //set the base address for interrupts to trap handler and
 	//set mode to 1 (this enables vectored interrupts)
 	RiscV::w_stvec(handlerAddress);
-	_thread::enable_user_mode(); // all threads created after this call will be user threads.
+	_thread* kernel_thread, *user_main_thread;
+	thread_create(&kernel_thread, nullptr, nullptr);
+	_thread::running = kernel_thread;
+	thread_create(&user_main_thread, user_main_wrapper, nullptr);
 
+	_thread::enable_user_mode();
 
+	//while(!user_main_thread->is_finished()) thread_dispatch();
+	thread_join(user_main_thread);
+	delete user_main_thread;
+	delete kernel_thread;
 
 	return 0;
 }
