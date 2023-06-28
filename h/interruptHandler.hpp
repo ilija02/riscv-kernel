@@ -2,10 +2,11 @@
 #define  INTERRUPT_HANDLER_HPP
 #include "../lib/hw.h"
 #include "../h/RiscV.hpp"
-#include "../h/printing.hpp" // remove later
+#include "../h/printing.hpp"
 #include "../h/syscall_id.hpp"
 #include "../h/MemoryAllocator.hpp"
 #include "../h/_thread.hpp"
+#include "../h/_sem.hpp"
 
 enum InterruptCause : uint64 {
   IRQ_TIMER = 0x8000000000000001UL, // sent as software interrupt from the most privileged mode

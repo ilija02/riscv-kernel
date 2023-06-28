@@ -2,7 +2,6 @@
 #define BASE_TCB_HPP
 
 #include "../lib/hw.h"
-#include "../lib/mem.h"
 #include "../h/Scheduler.hpp"
 #include "../h/RiscV.hpp"
 #include "../h/printing.hpp"
