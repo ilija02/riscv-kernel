@@ -53,34 +53,18 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
     ret_val = _thread::exit_thread();
 
   else if (syscall_id == SyscallID::THREAD_DISPATCH) {
-    uint64 volatile sepc = RiscV::r_sepc();
-    uint64 volatile sstatus = RiscV::r_sstatus();
-    _thread::dispatch();
-    RiscV::w_sepc(sepc);
-    RiscV::w_sstatus(sstatus);
+    SAVE_SSTATUS_SEPC({_thread::dispatch();})
   } else if (syscall_id == SyscallID::THREAD_JOIN) {
     if (a1 == nullptr) return ret_val;
-    uint64 volatile sepc = RiscV::r_sepc();
-    uint64 volatile sstatus = RiscV::r_sstatus();
-    ret_val = ((_thread *) a1)->join();
-    RiscV::w_sepc(sepc);
-    RiscV::w_sstatus(sstatus);
+    SAVE_SSTATUS_SEPC({ret_val = ((_thread *) a1)->join();})
   } else if (syscall_id == SyscallID::SEM_OPEN)
     ret_val =_sem::create_semaphore((_sem**)a1, (uint64)a2);
    else if (syscall_id == SyscallID::SEM_CLOSE)
      ret_val = MemoryAllocator::get().mem_free((sem_t)a1);
    else if (syscall_id == SyscallID::SEM_WAIT){
-    uint64 volatile sepc = RiscV::r_sepc();
-    uint64 volatile sstatus = RiscV::r_sstatus();
-    ret_val = ((sem_t)a1)->wait();
-    RiscV::w_sepc(sepc);
-    RiscV::w_sstatus(sstatus);
+    SAVE_SSTATUS_SEPC({ret_val = ((sem_t)a1)->wait();})
    } else if (syscall_id == SyscallID::SEM_SIGNAL){
-    uint64 volatile sepc = RiscV::r_sepc();
-    uint64 volatile sstatus = RiscV::r_sstatus();
-    ret_val = ((sem_t)a1)->signal();
-    RiscV::w_sepc(sepc);
-    RiscV::w_sstatus(sstatus);
+    SAVE_SSTATUS_SEPC({ret_val = ((sem_t)a1)->signal();})
    }
 
    else if (syscall_id == SyscallID::SWITCH_TO_USER)

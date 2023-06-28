@@ -8,6 +8,13 @@
 #include "../h/_thread.hpp"
 #include "../h/_sem.hpp"
 
+#define SAVE_SSTATUS_SEPC(code) \
+    uint64 volatile sepc = RiscV::r_sepc(); \
+    uint64 volatile sstatus = RiscV::r_sstatus(); \
+    code \
+    RiscV::w_sepc(sepc); \
+    RiscV::w_sstatus(sstatus);
+
 enum InterruptCause : uint64 {
   IRQ_TIMER = 0x8000000000000001UL, // sent as software interrupt from the most privileged mode
   IRQ_HARDWARE = 0x8000000000000009UL,  //keyboard
