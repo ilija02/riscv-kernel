@@ -47,3 +47,7 @@ void thread_dispatch() {
 void thread_join(thread_t handle) {
   perform_syscall(SyscallID::THREAD_JOIN, handle);
 }
+
+int sem_open(sem_t *handle, unsigned int init) {
+  return (int)perform_syscall(SyscallID::SEM_OPEN, (void*)handle, (void*)((uint64 )init));
+}

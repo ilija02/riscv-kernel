@@ -1,8 +1,8 @@
 #include "../h/interruptHandler.hpp"
 
-extern "C" void haltProcessor();
+extern "C" void haltProcessor(); // defined in halt.S
 
-inline void print_diagnostics(){
+inline void print_diagnostics() {
   const uint64 volatile scause = RiscV::r_scause();
   const uint64 volatile stval = RiscV::r_stval();
   const uint64 volatile sstatus = RiscV::r_sstatus();
@@ -33,10 +33,10 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
     printString("Exception: Illegal read address\n");
   } else if (scause == IRQ_ILLEGAL_WRITE_ADDRESS) {
     printString("Exception: Illegal write address\n");
-  } else if (scause == IRQ_SYSCALL_USER_MODE || scause == IRQ_SYSCALL_KERNEL_MODE) {
+  } else if (scause == IRQ_SYSCALL_USER_MODE || scause == IRQ_SYSCALL_KERNEL_MODE)
     processSyscall = 1;
-    //if (scause==IRQ_SYSCALL_USER_MODE) printString("User mode happened. \n");
-  }
+  //if (scause==IRQ_SYSCALL_USER_MODE) printString("User mode happened. \n");
+
   if (!processSyscall) print_diagnostics(); //exception happened
   // Note: The return value of the corresponding kernel functions is implicitly stored in a0, and then collected from a0 by corresponding C api call.
   if (syscall_id == SyscallID::MEM_ALLOC)
@@ -48,8 +48,10 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
   else if (syscall_id == SyscallID::THREAD_CREATE)
     // a1 - handle, a2 - start_routine, a3 - argument, a4 - allocated stack
     ret_val = _thread::create_thread((_thread **) a1, (_thread::Task) a2, a3, (uint64 *) a4);
+
   else if (syscall_id == SyscallID::THREAD_EXIT)
     ret_val = _thread::exit_thread();
+
   else if (syscall_id == SyscallID::THREAD_DISPATCH) {
     uint64 volatile sepc = RiscV::r_sepc();
     uint64 volatile sstatus = RiscV::r_sstatus();
@@ -63,9 +65,11 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
     ret_val = ((_thread *) a1)->join();
     RiscV::w_sepc(sepc);
     RiscV::w_sstatus(sstatus);
-  } else if(syscall_id == SyscallID::SWITCH_TO_USER){
+  } else if (syscall_id == SyscallID::SEM_OPEN)
+    ret_val =_sem::create_semaphore((_sem**)a1, (uint64)a2);
+  else if (syscall_id == SyscallID::SWITCH_TO_USER)
     RiscV::mc_sstatus(RiscV::SSTATUS_SPP);
-  }
+
 
   //a1 - thread to perform a join on
 
@@ -76,7 +80,7 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
 
 extern "C" void handleTimerTrap() {
   static uint64 counter = 0;
-  static uint64  seconds = 0;
+  static uint64 seconds = 0;
   const uint64 volatile scause = RiscV::r_scause();
   if (scause == IRQ_TIMER) {
     if (counter == 10) {

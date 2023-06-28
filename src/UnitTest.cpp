@@ -177,7 +177,13 @@ bool UnitTest::test_semaphore() {
   while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
     thread_dispatch();
   }
+  /* doesn't work when using join, fix later
+   *   thread_join(threads[1]);
+   thread_join(threads[2]);
 
+   */
+  /*thread_join(threads[1]);
+  thread_join(threads[2]); */
   for (auto &thread: threads) delete thread;
   printString("----- Finished test: test_semaphore -----\n");
 
