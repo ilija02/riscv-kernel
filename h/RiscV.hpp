@@ -4,7 +4,7 @@
 #include "../lib/hw.h"
 
 class RiscV {
-public:
+ public:
 
   // pop sstatus.spp and sstatus.spie bits (has to be a non inline function)
   static void popSppSpie();

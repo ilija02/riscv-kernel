@@ -3,38 +3,40 @@
 #include "../h/printing.hpp"
 extern "C" void trapHandler();
 
-void print_free_memory(uint64 free_memory_at_start, uint64 free_memory_at_end) {
-  printString("start free memory:  ");
-  printInt(free_memory_at_start);
-  printString("\t");
-  printString("end free memory:  ");
-  printInt(free_memory_at_end);
-  printString("\n");
+void print_free_memory(uint64 free_memory_at_start, uint64 free_memory_at_end)
+{
+	printString("start free memory:  ");
+	printInt(free_memory_at_start);
+	printString("\t");
+	printString("end free memory:  ");
+	printInt(free_memory_at_end);
+	printString("\n");
 }
 
-int main() {
-  uint64 volatile
-      handlerAddress = (uint64) &trapHandler | 0x01; //set the base address for interrupts to trap handler and
-  //set mode to 1 (this enables vectored interrupts)
-  RiscV::w_stvec(handlerAddress);
-  _thread::enable_user_mode(); // all threads created after this call will be user threads.
-  //RiscV::ms_sstatus(RiscV::SSTATUS_SIE);
-  //----------------------------------------
-  MemoryAllocator &instance = MemoryAllocator::get();
-  BlockHeader *free_head = (BlockHeader *) instance.get_free_head();
-  size_t free_memory_at_start = free_head->size_in_bytes;
-  //--------------------------------------
+int main()
+{
+	uint64 volatile
+		handlerAddress = (uint64)&trapHandler | 0x01; //set the base address for interrupts to trap handler and
+	//set mode to 1 (this enables vectored interrupts)
+	RiscV::w_stvec(handlerAddress);
+	_thread::enable_user_mode(); // all threads created after this call will be user threads.
+	//RiscV::ms_sstatus(RiscV::SSTATUS_SIE);
+	//----------------------------------------
+	MemoryAllocator& instance = MemoryAllocator::get();
+	BlockHeader* free_head = (BlockHeader*)instance.get_free_head();
+	size_t free_memory_at_start = free_head->size_in_bytes;
+	//--------------------------------------
 
-  UnitTest &TestRunner = UnitTest::get();
+	UnitTest& TestRunner = UnitTest::get();
 
 //  TestRunner.test_synchronous_context_switching();
 //  TestRunner.test_new_delete();
 //  TestRunner.test_dequeue();
 //  TestRunner.test_thread_create();
-  TestRunner.test_semaphore();
-  print_free_memory(free_memory_at_start, free_head->size_in_bytes);
+	TestRunner.test_semaphore();
+	print_free_memory(free_memory_at_start, free_head->size_in_bytes);
 
-  return 0;
+	return 0;
 }
 
 
