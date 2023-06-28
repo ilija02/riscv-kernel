@@ -22,7 +22,7 @@ void _thread::dispatch() {
     Scheduler::get().put_tcb(old_running);
     old_running->resume();
   } else { // if the thread is finished and the parent is waiting for it, put the parent in the scheduler
-    if (old_running->parent_thread && old_running->is_parent_waiting) {
+    if (old_running->parent_thread && old_running->is_parent_waiting && !old_running->is_blocked()) {
       old_running->is_parent_waiting = false;
       old_running->parent_thread->resume();
       Scheduler::get().put_tcb(old_running->parent_thread);
