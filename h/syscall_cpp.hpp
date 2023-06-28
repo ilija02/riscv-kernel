@@ -1,10 +1,13 @@
 #ifndef _syscall_cpp
 #define _syscall_cpp
 #include "syscall_c.h"
-void*::operator new(size_t);
-void::operator delete(void*);
+
+void* operator new(size_t);
+void operator delete(void*);
+
 class Thread
 {
+ friend class RunWrapper;
  public:
 	Thread(void (* body)(void*), void* arg);
 	virtual ~Thread();
@@ -22,6 +25,7 @@ class Thread
 	void (* body)(void*);
 	void* arg;
 };
+
 class Semaphore
 {
  public:
@@ -32,6 +36,7 @@ class Semaphore
  private:
 	sem_t myHandle;
 };
+
 class PeriodicThread : public Thread
 {
  public:

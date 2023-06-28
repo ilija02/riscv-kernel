@@ -6,8 +6,8 @@
 class _sem
 {
  public:
-	~_sem();
 	static uint64 create_semaphore(_sem** handle, uint32 initial_value = 1);
+	void close();
 	int wait();
 	int signal();
 	long value() const

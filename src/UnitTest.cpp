@@ -12,10 +12,10 @@ bool UnitTest::test_memory_allocator()
 {
 	MemoryAllocator& instance = MemoryAllocator::get();
 	BlockHeader* free_head = (BlockHeader*)instance.get_free_head();
-	printString("Free head size after initialization: ");
+	print_string("Free head size after initialization: ");
 	uint64 old_size = free_head->size_in_bytes;
-	printInt(old_size);
-	printString("\n");
+	print_int(old_size);
+	print_string("\n");
 	void* a1 = mem_alloc(1024);
 	void* a2 = mem_alloc(1024);
 	void* a3 = mem_alloc(1024);
@@ -23,10 +23,10 @@ bool UnitTest::test_memory_allocator()
 	mem_free(a2);
 	mem_free(a3);
 	free_head = (BlockHeader*)instance.get_free_head();
-	printString("Free head size after freeing memory: ");
+	print_string("Free head size after freeing memory: ");
 	uint64 new_size = free_head->size_in_bytes;
-	printInt(new_size);
-	printString("\n");
+	print_int(new_size);
+	print_string("\n");
 	return old_size == new_size;
 }
 
@@ -35,10 +35,10 @@ bool UnitTest::test_new_delete()
 
 	MemoryAllocator& instance = MemoryAllocator::get();
 	BlockHeader* free_head = (BlockHeader*)instance.get_free_head();
-	printString("Free head size after initialization: ");
+	print_string("Free head size after initialization: ");
 	uint64 old_size = free_head->size_in_bytes;
-	printInt(old_size);
-	printString("\n");
+	print_int(old_size);
+	print_string("\n");
 
 	TestStruct* t = new TestStruct();
 	t->x = 5;
@@ -50,23 +50,23 @@ bool UnitTest::test_new_delete()
 		arr[i] = i;
 	}
 	free_head = (BlockHeader*)instance.get_free_head();
-	printString("Free head size after allocating a struct and an array: ");
+	print_string("Free head size after allocating a struct and an array: ");
 	uint64 allocated_size = free_head->size_in_bytes;
-	printInt(allocated_size);
-	printString("\n");
+	print_int(allocated_size);
+	print_string("\n");
 
-	printString("Number of bytes allocated: ");
-	printInt(old_size - allocated_size);
-	printString("\n");
+	print_string("Number of bytes allocated: ");
+	print_int(old_size - allocated_size);
+	print_string("\n");
 	delete t;
 	delete[] arr;
 
 	free_head = (BlockHeader*)instance.get_free_head();
-	printString("Free head size after freeing memory: ");
+	print_string("Free head size after freeing memory: ");
 	uint64 new_size = free_head->size_in_bytes;
-	printInt(new_size);
-	printString("\n");
-	printString("Test of new and delete completed.\n");
+	print_int(new_size);
+	print_string("\n");
+	print_string("Test of new and delete completed.\n");
 
 	return old_size == new_size;
 }
@@ -80,24 +80,24 @@ bool UnitTest::test_dequeue()
 	dequeue.push_back(&x);
 	dequeue.push_back(&y);
 	uint64* tmp = dequeue.front();
-	printInt(*tmp);
+	print_int(*tmp);
 	tmp = dequeue.back();
-	printInt(*tmp);
+	print_int(*tmp);
 	//20 15 5 10
 	dequeue.push_front(&z);
 	dequeue.push_front(&w);
 	tmp = dequeue.front();
-	printInt(*tmp);
+	print_int(*tmp);
 	tmp = dequeue.back();
-	printInt(*tmp);
+	print_int(*tmp);
 
 	dequeue.pop_front();
 	tmp = dequeue.front();
-	printInt(*tmp);
+	print_int(*tmp);
 
 	dequeue.pop_back();
 	tmp = dequeue.back();
-	printInt(*tmp);
+	print_int(*tmp);
 	dequeue.pop_front();
 	dequeue.pop_back();
 	dequeue.pop_back();
@@ -107,49 +107,49 @@ bool UnitTest::test_dequeue()
 
 bool UnitTest::test_synchronous_context_switching()
 {
-	printString("------ Testing: test_synchronous_context_switching --------\n");
+	print_string("------ Testing: test_synchronous_context_switching --------\n");
 	thread_t threads[3];
 	_thread::create_thread(&threads[0], nullptr, nullptr, nullptr);
 	uint64* stack1 = new uint64[DEFAULT_STACK_SIZE];
 	uint64* stack2 = new uint64[DEFAULT_STACK_SIZE];
 	_thread::running = threads[0];
 	_thread::create_thread(&threads[1], workerBodyA, nullptr, stack1);
-	printString("Thread A created\n");
+	print_string("Thread A created\n");
 	_thread::create_thread(&threads[2], workerBodyB, nullptr, stack2);
-	printString("Thread B created\n");
+	print_string("Thread B created\n");
 	/*while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
 	_thread::yield();
   }*/
 	threads[1]->join();
 	threads[2]->join();
 	for (auto& thread : threads) delete thread;
-	printString("----- Finished test: test_synchronous_context_switching -----\n");
+	print_string("----- Finished test: test_synchronous_context_switching -----\n");
 	return true;
 }
 
 bool UnitTest::test_thread_create()
 {
-	printString("------Testing: test_thread_create --------\n");
+	print_string("------Testing: test_thread_create --------\n");
 	thread_t threads[3] = { nullptr };
 
 	if (thread_create(&threads[0], nullptr, nullptr) < 0)
 	{
-		printString("Failed creating main thread.");
+		print_string("Failed creating main thread.");
 		return false;
 	}
 	_thread::running = threads[0];
 	if (thread_create(&threads[1], workerBodyA, nullptr) < 0)
 	{
-		printString("Failed creating A thread.");
+		print_string("Failed creating A thread.");
 		return false;
 	}
-	printString("Thread A created\n");
+	print_string("Thread A created\n");
 
 	if (thread_create(&threads[2], workerBodyB, nullptr) < 0)
 	{
-		printString("Failed creating B thread.");
+		print_string("Failed creating B thread.");
 	}
-	printString("Thread B created.\n");
+	print_string("Thread B created.\n");
 
 	/*while (!(threads[1]->is_finished() && threads[2]->is_finished() )) {
 	  thread_dispatch();
@@ -157,36 +157,36 @@ bool UnitTest::test_thread_create()
 	thread_join(threads[1]);
 	thread_join(threads[2]);
 	for (auto& thread : threads) delete thread;
-	printString("----- Finished test: test_thread_create -----\n");
+	print_string("----- Finished test: test_thread_create -----\n");
 	return true;
 }
 
 bool UnitTest::test_semaphore()
 {
-	printString("------Testing: test_semaphore --------\n");
+	print_string("------Testing: test_semaphore --------\n");
 	thread_t threads[3] = { nullptr };
 
 	//_sem::create_semaphore(&semaphore, 0);
 	sem_open(&semaphore, 0);
 	if (thread_create(&threads[0], nullptr, nullptr) < 0)
 	{
-		printString("Failed creating main thread.");
+		print_string("Failed creating main thread.");
 		return false;
 	}
 	_thread::running = threads[0];
 
 	if (thread_create(&threads[1], sem_worker_b, nullptr) < 0)
 	{
-		printString("Failed creating B thread.");
+		print_string("Failed creating B thread.");
 		return false;
 	}
-	printString("Thread B created\n");
+	print_string("Thread B created\n");
 	if (thread_create(&threads[2], sem_worker_a, nullptr) < 0)
 	{
-		printString("Failed creating A thread.");
+		print_string("Failed creating A thread.");
 		return false;
 	}
-	printString("Thread A created\n");
+	print_string("Thread A created\n");
 
 
 //  while (!(threads[1]->is_finished() && threads[2]->is_finished())) {
@@ -197,7 +197,7 @@ bool UnitTest::test_semaphore()
 	thread_join(threads[2]);
 
 	for (auto& thread : threads) delete thread;
-	printString("----- Finished test: test_semaphore -----\n");
+	print_string("----- Finished test: test_semaphore -----\n");
 
 	sem_close(semaphore);
 	return true;

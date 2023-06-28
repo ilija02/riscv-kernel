@@ -1,6 +1,6 @@
+#include "../h/UnitTest.hpp"
 #include "../h/RiscV.hpp"
-#include "../h/_thread.hpp"
-
+#include "../h/print.hpp"
 extern "C" void trapHandler();
 
 void print_free_memory(uint64 free_memory_at_start, uint64 free_memory_at_end)
@@ -20,8 +20,22 @@ int main()
 	//set mode to 1 (this enables vectored interrupts)
 	RiscV::w_stvec(handlerAddress);
 	_thread::enable_user_mode(); // all threads created after this call will be user threads.
+	//RiscV::ms_sstatus(RiscV::SSTATUS_SIE);
 
+	//----------------------------------------
+	MemoryAllocator& instance = MemoryAllocator::get();
+	BlockHeader* free_head = (BlockHeader*)instance.get_free_head();
+	size_t free_memory_at_start = free_head->size_in_bytes;
+	//--------------------------------------
 
+	UnitTest& TestRunner = UnitTest::get();
+
+//  TestRunner.test_synchronous_context_switching();
+//  TestRunner.test_new_delete();
+//  TestRunner.test_dequeue();
+//  TestRunner.test_thread_create();
+	TestRunner.test_semaphore();
+	print_free_memory(free_memory_at_start, free_head->size_in_bytes);
 
 	return 0;
 }

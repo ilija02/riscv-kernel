@@ -4,7 +4,7 @@
 #include "../lib/hw.h"
 #include "../h/Scheduler.hpp"
 #include "../h/RiscV.hpp"
-#include "../h/printing.hpp"
+#include "../h/print.hpp"
 
 class _thread
 {
@@ -105,6 +105,8 @@ class _thread
 	_thread* parent_thread = nullptr;
 	void* argument;
 	bool is_parent_waiting = false;
+	bool wait_returns_error =
+		false; // if the semaphore closes the wait should return -1 , this attribute is used in sem_close and sem_wait
 
 };
 

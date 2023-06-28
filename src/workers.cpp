@@ -1,6 +1,6 @@
 #include "../lib/hw.h"
 #include "../h/_thread.hpp"
-#include "../h/printing.hpp"
+#include "../h/print.hpp"
 #include"../h/_sem.hpp"
 
 extern sem_t semaphore;
@@ -23,34 +23,34 @@ void workerBodyA(void*)
 	}*/ //uncomment this code to test if the timer can interrupt
 	for (; i < 3; i++)
 	{
-		printString("A: i=");
-		printInt(i);
-		printString("\n");
+		print_string("A: i=");
+		print_int(i);
+		print_string("\n");
 	}
 
-	printString("A: yield\n");
+	print_string("A: yield\n");
 	__asm__ ("li t1, 7");
 	//_thread::yield();
 	thread_dispatch();
 	uint64 t1 = 0;
 	__asm__ ("mv %[t1], t1" : [t1] "=r"(t1));
 
-	printString("A: t1=");
-	printInt(t1);
-	printString("\n");
+	print_string("A: t1=");
+	print_int(t1);
+	print_string("\n");
 
 	uint64 result = fibonacci(23);
-	printString("A: fibonaci=");
-	printInt(result);
-	printString("\n");
+	print_string("A: fibonaci=");
+	print_int(result);
+	print_string("\n");
 
 	for (; i < 6; i++)
 	{
-		printString("A: i=");
-		printInt(i);
-		printString("\n");
+		print_string("A: i=");
+		print_int(i);
+		print_string("\n");
 	}
-	printString("Worker A done\n");
+	print_string("Worker A done\n");
 	thread_exit();
 }
 
@@ -59,40 +59,44 @@ void workerBodyB(void*)
 	uint8 i = 10;
 	for (; i < 13; i++)
 	{
-		printString("B: i=");
-		printInt(i);
-		printString("\n");
+		print_string("B: i=");
+		print_int(i);
+		print_string("\n");
 	}
 
-	printString("B: yield\n");
+	print_string("B: yield\n");
 	__asm__ ("li t1, 5");
 	//_thread::yield();
 	thread_dispatch();
 	uint64 result = fibonacci(25); //75025
-	printString("B: fibonaci=");
-	printInt(result);
-	printString("\n");
+	print_string("B: fibonaci=");
+	print_int(result);
+	print_string("\n");
 
 	for (; i < 16; i++)
 	{
-		printString("B: i=");
-		printInt(i);
-		printString("\n");
+		print_string("B: i=");
+		print_int(i);
+		print_string("\n");
 	}
-	printString("Worker B done\n");
+	print_string("Worker B done\n");
 	//thread_exit();
 }
 
 void sem_worker_a(void*)
 {
-	printString("sem_worker_a started. Signaling semaphore. \n");
+	print_string("sem_worker_a signaling the semaphore. \n");
 	sem_signal(semaphore);
-	printString("sem_worker_a signaled the semaphore.\n");
+	print_string("sem_worker_a signaled the semaphore.\n");
 }
 
 void sem_worker_b(void*)
 {
-	printString("sem_worker_b started. Waiting for semaphore.\n");
+	print_string("sem_worker_b started. Waiting for semaphore and running a loop.\n");
+	volatile uint64 dummy = 0;
+	for (int i = 0; i < 1000000000; ++i) {
+		dummy += i; // Dummy operation to prevent optimization
+	}
 	if (semaphore) sem_wait(semaphore);
-	printString("sem_worker_b passed the semaphore.\n");
+	print_string("sem_worker_b passed the semaphore.\n");
 }

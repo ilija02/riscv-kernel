@@ -8,18 +8,18 @@ inline void print_diagnostics()
 	const uint64 volatile stval = RiscV::r_stval();
 	const uint64 volatile sstatus = RiscV::r_sstatus();
 	const uint64 volatile sepc = RiscV::r_sepc();
-	printString("stval: ");
-	printInt(stval, 16);
-	printString("\n");
-	printString("scause: ");
-	printInt(scause, 16);
-	printString("\n");
-	printString("sstatus: ");
-	printInt(sstatus, 16);
-	printString("\n");
-	printString("sepc: ");
-	printInt(sepc, 16);
-	printString("\n");
+	print_string("stval: ");
+	print_int(stval, 16);
+	print_string("\n");
+	print_string("scause: ");
+	print_int(scause, 16);
+	print_string("\n");
+	print_string("sstatus: ");
+	print_int(sstatus, 16);
+	print_string("\n");
+	print_string("sepc: ");
+	print_int(sepc, 16);
+	print_string("\n");
 	haltProcessor();
 }
 
@@ -31,19 +31,19 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void* a1, void* a2, vo
 	const uint64 volatile scause = RiscV::r_scause();
 	if (scause == InterruptCause::IRQ_ILLEGAL_INSTRUCTION)
 	{
-		printString("Exception: Illegal instruction\n");
+		print_string("Exception: Illegal instruction\n");
 	}
 	else if (scause == IRQ_ILLEGAL_READ_ADDRESS)
 	{
-		printString("Exception: Illegal read address\n");
+		print_string("Exception: Illegal read address\n");
 	}
 	else if (scause == IRQ_ILLEGAL_WRITE_ADDRESS)
 	{
-		printString("Exception: Illegal write address\n");
+		print_string("Exception: Illegal write address\n");
 	}
 	else if (scause == IRQ_SYSCALL_USER_MODE || scause == IRQ_SYSCALL_KERNEL_MODE)
 		processSyscall = 1;
-	//if (scause==IRQ_SYSCALL_USER_MODE) printString("User mode happened. \n");
+	//if (scause==IRQ_SYSCALL_USER_MODE) print_string("User mode happened. \n");
 
 	if (!processSyscall) print_diagnostics(); //exception happened
 	// Note: The return value of the corresponding kernel functions is implicitly stored in a0, and then collected from a0 by corresponding C api call.
@@ -70,8 +70,11 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void* a1, void* a2, vo
 	}
 	else if (syscall_id == SyscallID::SEM_OPEN)
 		ret_val = _sem::create_semaphore((_sem**)a1, (uint64)a2);
-	else if (syscall_id == SyscallID::SEM_CLOSE)
+	else if (syscall_id == SyscallID::SEM_CLOSE){
+		((sem_t)a1)->close();
 		ret_val = MemoryAllocator::get().mem_free((sem_t)a1);
+	}
+
 	else if (syscall_id == SyscallID::SEM_WAIT)
 	{
 		SAVE_SSTATUS_SEPC({ ret_val = ((sem_t)a1)->wait(); })
@@ -98,9 +101,9 @@ extern "C" void handleTimerTrap()
 		if (counter == 10)
 		{
 			seconds++;
-			printString("Timer: ");
-			printInt(seconds);
-			printString("s \n");
+			print_string("Timer: ");
+			print_int(seconds);
+			print_string("s \n");
 			counter = 0;
 		}
 		counter++;

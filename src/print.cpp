@@ -1,6 +1,6 @@
-#include "../h/printing.hpp"
+#include "../h/print.hpp"
 
-void printString(char const *string) {
+void print_string(char const *string) {
 
   while (*string != '\0') {
     __putc(*string);
@@ -9,7 +9,7 @@ void printString(char const *string) {
 
 }
 
-char *getString(char *buf, int max) {
+char *get_string(char *buf, int max) {
   int i, cc;
   char c;
 
@@ -26,7 +26,7 @@ char *getString(char *buf, int max) {
   return buf;
 }
 
-int stringToInt(const char *s) {
+int string_to_int(const char *s) {
   int n;
 
   n = 0;
@@ -37,7 +37,7 @@ int stringToInt(const char *s) {
 
 char digits[] = "0123456789ABCDEF";
 
-void printInt(int xx, int base, int sgn) {
+void print_int(int xx, int base, int sgn) {
   char buf[16];
   int i, neg;
   uint x;
