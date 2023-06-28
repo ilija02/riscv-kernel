@@ -155,7 +155,8 @@ bool UnitTest::test_semaphore() {
   printString("------Testing: test_semaphore --------\n");
   thread_t threads[3] = {nullptr};
 
-  _sem::create_semaphore(&semaphore, 0);
+  //_sem::create_semaphore(&semaphore, 0);
+  sem_open(&semaphore, 0);
   if (thread_create(&threads[0], nullptr, nullptr) < 0) {
     printString("Failed creating main thread.");
     return false;
@@ -184,7 +185,7 @@ bool UnitTest::test_semaphore() {
   for (auto &thread: threads) delete thread;
   printString("----- Finished test: test_semaphore -----\n");
 
-  delete semaphore;
+  sem_close(semaphore);
   return true;
 
 }

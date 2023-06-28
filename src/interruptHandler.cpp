@@ -67,7 +67,23 @@ extern "C" uint64 handleSupervisorTrap(uint64 syscall_id, void *a1, void *a2, vo
     RiscV::w_sstatus(sstatus);
   } else if (syscall_id == SyscallID::SEM_OPEN)
     ret_val =_sem::create_semaphore((_sem**)a1, (uint64)a2);
-  else if (syscall_id == SyscallID::SWITCH_TO_USER)
+   else if (syscall_id == SyscallID::SEM_CLOSE)
+     ret_val = MemoryAllocator::get().mem_free((sem_t)a1);
+   else if (syscall_id == SyscallID::SEM_WAIT){
+    uint64 volatile sepc = RiscV::r_sepc();
+    uint64 volatile sstatus = RiscV::r_sstatus();
+    ret_val = ((sem_t)a1)->wait();
+    RiscV::w_sepc(sepc);
+    RiscV::w_sstatus(sstatus);
+   } else if (syscall_id == SyscallID::SEM_SIGNAL){
+    uint64 volatile sepc = RiscV::r_sepc();
+    uint64 volatile sstatus = RiscV::r_sstatus();
+    ret_val = ((sem_t)a1)->signal();
+    RiscV::w_sepc(sepc);
+    RiscV::w_sstatus(sstatus);
+   }
+
+   else if (syscall_id == SyscallID::SWITCH_TO_USER)
     RiscV::mc_sstatus(RiscV::SSTATUS_SPP);
 
 

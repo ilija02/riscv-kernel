@@ -51,3 +51,12 @@ void thread_join(thread_t handle) {
 int sem_open(sem_t *handle, unsigned int init) {
   return (int)perform_syscall(SyscallID::SEM_OPEN, (void*)handle, (void*)((uint64 )init));
 }
+int sem_close(sem_t handle) {
+  return (int)perform_syscall(SyscallID::SEM_CLOSE, (void*) handle );
+}
+int sem_wait(sem_t id) {
+  return (int)perform_syscall(SyscallID::SEM_WAIT, (void*)id);
+}
+int sem_signal(sem_t id) {
+  return (int)perform_syscall(SyscallID::SEM_SIGNAL, (void*)id);
+}
