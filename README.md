@@ -33,10 +33,9 @@ This is the repository for my final project in the operating systems class. The 
 
 Note: *console functions have bugs and current implementations uses the already finished methods from lib/console.lib*
 
-## Getting Started
-
-To build and run the operating system on a RiscV processor emulated by QEMU, follow the instructions in the [project setup instructions](http://os.etf.bg.ac.rs/OS1/projekat/Projektni%20zadatak%202023.%20v1.0.pdf).
 
 ## Building and running the project 
 
 This project was built using Clion inside the Ubuntu VM provided by the University. Virtual machine can be downloaded from [here](https://drive.google.com/file/d/1edGYFcvdnV0pbKws_1G1vePtEec0qC0G/view).
+
+Initial project setup instructions can be found [here](http://os.etf.bg.ac.rs/OS1/projekat/Projektni%20zadatak%202023.%20v1.0.pdf).
